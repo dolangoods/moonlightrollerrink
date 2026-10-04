@@ -148,27 +148,35 @@ canvas{display:block}
 .swap>*:nth-child(2){animation-delay:.06s}.swap>*:nth-child(3){animation-delay:.12s}.swap>*:nth-child(4){animation-delay:.18s}.swap>*:nth-child(5){animation-delay:.24s}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 /* real artwork, lit like the rink: a slow push-in at low light (monochrome sleeves also get a dusk/neon tint),
-   a light sweep on a loop, mirror-ball specks turning over it; on hover the lights come up and the cover tilts toward the pointer. */
+   a light sweep on a loop, mirror-ball specks turning over it; on hover the lights come up and the cover tilts toward the pointer.
+   Kept cheap for phones: only the sleeve on show (and the one it is wiping over) renders, the lights are one shared overlay
+   without blend modes, and everything pauses while the cover is off screen. */
 .cover{transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .8s var(--ease)}
 .cover.tilt{transition:transform .15s linear}
-.art{position:absolute;inset:0;overflow:hidden;background:var(--ink-2);--rest:.84}
+.art{display:none;overflow:hidden;background:var(--ink-2);--rest:.84}
+.art.on,.art.prev{display:block}
 .art--tint{--rest:.74}
 .art>*{position:absolute;pointer-events:none}
-.art img{inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.12) brightness(var(--rest));animation:push 24s ease-in-out infinite alternate;transition:filter .8s var(--ease)}
+.art img{inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.12) brightness(var(--rest));transition:filter .8s var(--ease)}
+.art.on img{animation:push 24s ease-in-out infinite alternate}
 @keyframes push{from{transform:scale(1.04)}to{transform:scale(1.18) translate3d(-3%,2%,0)}}
 .art__tone{inset:0;background:linear-gradient(155deg,var(--dusk),transparent 48%,var(--neon));mix-blend-mode:color;opacity:.7;transition:opacity .8s var(--ease)}
-.art__sweep{inset:-20% -60%;background:linear-gradient(105deg,transparent 43%,rgba(111,227,212,.28) 46.5%,rgba(241,238,223,.7) 50%,rgba(255,77,141,.28) 53.5%,transparent 57%);mix-blend-mode:screen;transform:translateX(-60%);animation:sweep 8s cubic-bezier(.45,0,.55,1) infinite}
-@keyframes sweep{0%,50%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
-.art__dots{left:-30%;top:-30%;width:160%;height:160%;mix-blend-mode:screen;opacity:.9;animation:spin 48s linear infinite;
+.fx{z-index:2147483000;overflow:hidden;pointer-events:none;box-shadow:inset 0 0 90px 10px rgba(7,8,26,.75)}
+.fx>*{position:absolute}
+.fx__sweep{top:-20%;bottom:-20%;left:0;width:45%;background:linear-gradient(100deg,transparent 22%,rgba(111,227,212,.22) 40%,rgba(241,238,223,.5) 50%,rgba(255,77,141,.22) 60%,transparent 78%);transform:translateX(-110%);animation:sweep 8s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes sweep{0%,50%{transform:translateX(-110%)}100%{transform:translateX(230%)}}
+.fx__dots{left:-21%;top:-21%;width:142%;height:142%;opacity:.9;transition:opacity .8s var(--ease);animation:spin 48s linear infinite;
   background:radial-gradient(circle,rgba(241,238,223,1) 0 1.8px,transparent 3px) 0 0/41px 37px,radial-gradient(circle,rgba(111,227,212,.9) 0 1.5px,transparent 2.6px) 13px 21px/53px 47px,radial-gradient(circle,rgba(255,77,141,.9) 0 1.5px,transparent 2.6px) 29px 7px/61px 59px;
   -webkit-mask-image:radial-gradient(circle at 34% 30%,#000,transparent 40%),radial-gradient(circle at 70% 66%,#000,transparent 36%);mask-image:radial-gradient(circle at 34% 30%,#000,transparent 40%),radial-gradient(circle at 70% 66%,#000,transparent 36%)}
 @keyframes spin{to{transform:rotate(1turn)}}
-.art__spot{inset:0;background:radial-gradient(circle at var(--px,50%) var(--py,50%),rgba(241,238,223,.55),transparent 45%);mix-blend-mode:overlay;opacity:0;transition:opacity .6s}
-.art::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 90px 10px rgba(7,8,26,.75);pointer-events:none}
-.cover:hover .art__tone{opacity:.12}
-.cover:hover .art img{filter:contrast(1.1) brightness(1)}
-.cover:hover .art__dots{opacity:.35}
-.cover:hover .art__spot{opacity:1}
+.fx__spot{display:none;inset:0;background:radial-gradient(circle at var(--px,50%) var(--py,50%),rgba(241,238,223,.55),transparent 45%);mix-blend-mode:overlay}
+.cover.idle .fx>*,.cover.idle .art img{animation-play-state:paused}
+@media (hover:hover){
+  .cover:hover .art__tone{opacity:.12}
+  .cover:hover .art img{filter:contrast(1.1) brightness(1)}
+  .cover:hover .fx__dots{opacity:.35}
+  .cover:hover .fx__spot{display:block}
+}
 @media (max-width:900px){
   .rec{grid-template-columns:minmax(0,1fr)}
   .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.tab{flex-direction:column;gap:6px}
@@ -357,10 +365,11 @@ canvas{display:block}
       </div>
       <div class="rv" style="--d:.08s">
         <div class="cover" id="cover">
-          <div class="art art--tint" data-art="tucson">
+          <div class="art art--tint on" data-art="tucson">
             <img src="assets/meet-me-in-tucson.webp" width="728" height="728" alt="Meet Me in Tucson artwork: the band recording in a studio, seen from above">
-            <span class="art__tone"></span><span class="art__dots"></span><span class="art__sweep"></span><span class="art__spot"></span>
+            <span class="art__tone"></span>
           </div>
+          <div class="fx" aria-hidden="true"><span class="fx__dots"></span><span class="fx__sweep"></span><span class="fx__spot"></span></div>
         </div>
         <p class="cover__cap mono dim" id="coverCap">Meet Me in Tucson · artwork</p>
       </div>
@@ -671,21 +680,25 @@ canvas{display:block}
   Object.entries(ART).forEach(([key, [file, title, alt, tint]]) => {
     if (layers[key]) return;
     const d = document.createElement('div'); d.className = 'art' + (tint ? ' art--tint' : ''); d.dataset.art = key;
-    d.innerHTML = `<img src="assets/${file}.webp" width="728" height="728" decoding="async" alt="">${tint ? '<span class="art__tone"></span>' : ''}<span class="art__dots"></span><span class="art__sweep"></span><span class="art__spot"></span>`;
+    d.innerHTML = `<img src="assets/${file}.webp" width="728" height="728" decoding="async" alt="">${tint ? '<span class="art__tone"></span>' : ''}`;
     $('img', d).alt = title + ' artwork: ' + alt; coverEl.prepend(d); layers[key] = d;
   });
   let shown = 'tucson';
+  new IntersectionObserver(es => coverEl.classList.toggle('idle', !es[0].isIntersecting)).observe(coverEl);
   function showArt(key, quick) {
-    if (key === shown) return; shown = key;
-    const el = layers[key]; el.style.zIndex = ++z;
+    if (key === shown) return;
+    const old = layers[shown], el = layers[key]; shown = key;
+    $$('.art.prev', coverEl).forEach(l => l.classList.remove('prev'));
+    old.classList.replace('on', 'prev'); el.classList.add('on'); el.style.zIndex = ++z;
     el.classList.remove('wipe', 'wipe--quick'); void el.offsetWidth; el.classList.add('wipe'); el.classList.toggle('wipe--quick', !!quick);
+    el.onanimationend = e => { if (e.target === el && shown === key) old.classList.remove('prev'); };   // wipe done: stop drawing the old sleeve
     coverCap.textContent = ART[key][1] + ' · artwork';
   }
   function setAlbum(i, first) {
     const a = albums[i];
     tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i));
     recInfo.classList.remove('swap');
-    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener" data-art="${s[2]}"><img class="row__art" src="assets/${ART[s[2]][0]}.webp" width="44" height="44" alt=""><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
+    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener" data-art="${s[2]}"><img class="row__art" src="assets/thumbs/${ART[s[2]][0]}.webp" width="44" height="44" alt=""><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
     // pointing at or tabbing to a song previews its sleeve; leaving the list returns to the year's cover
     const rows = $('.rows', recInfo);
     $$('a', rows).forEach(r => { const go = () => showArt(r.dataset.art, true); r.addEventListener('pointerenter', go); r.addEventListener('focus', go); });
