@@ -53,7 +53,13 @@ canvas{display:block}
 .lk span{display:block;position:relative;transition:transform .5s var(--ease)}
 .lk span::after{content:attr(data-t);position:absolute;left:0;top:100%;color:var(--glow)}
 .lk:hover span,.lk:focus-visible span{transform:translateY(-100%)}
-.menu-btn{display:none;padding:8px 0}
+.menu-btn{display:none;position:relative;width:44px;height:44px;margin:-10px -10px -10px 0}
+.menu-btn span{position:absolute;left:10px;right:10px;top:50%;height:2px;margin-top:-1px;background:currentColor;transition:transform .5s var(--ease),opacity .3s}
+.menu-btn span:nth-child(1){transform:translateY(-7px)}
+.menu-btn span:nth-child(3){transform:translateY(7px)}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0;transform:scaleX(0)}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:rotate(-45deg)}
 .menu{position:fixed;inset:0;z-index:49;background:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:4px;padding:var(--gut);
   clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
 .menu.open{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease),visibility 0s}
@@ -306,7 +312,7 @@ canvas{display:block}
       <li><a class="lk" href="#news"><span data-t="Newsletter">Newsletter</span></a></li>
     </ul>
   </nav>
-  <button class="menu-btn mono" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span><span></span></button>
 </header>
 <div class="menu" id="menu">
   <a href="#recordings" style="--i:0">Music</a>
@@ -773,7 +779,7 @@ canvas{display:block}
 
   /* ---------- nav ---------- */
   const nav = $('#nav'), menu = $('#menu'), menuBtn = $('#menuBtn'); let lastY = 0, menuOpen = false;
-  const setMenu = o => { menuOpen = o; menu.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); menuBtn.textContent = o ? 'Close' : 'Menu'; };
+  const setMenu = o => { menuOpen = o; menu.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); menuBtn.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); };
   menuBtn.onclick = () => setMenu(!menuOpen);
   $$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
   addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
