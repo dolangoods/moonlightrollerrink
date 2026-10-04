@@ -146,6 +146,27 @@ canvas{display:block}
 .swap>*{animation:rise .9s var(--ease) both}
 .swap>*:nth-child(2){animation-delay:.06s}.swap>*:nth-child(3){animation-delay:.12s}.swap>*:nth-child(4){animation-delay:.18s}.swap>*:nth-child(5){animation-delay:.24s}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+/* real artwork: the studio photo for Meet Me in Tucson, lit like the rink. A slow push-in under a dusk/neon tint,
+   a light sweep on a loop, mirror-ball specks turning over it; on hover the tint lifts and the cover tilts toward the pointer. */
+.cover{transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .8s var(--ease)}
+.cover.tilt{transition:transform .15s linear}
+.art{position:absolute;inset:0;overflow:hidden;background:var(--ink-2)}
+.art>*{position:absolute;pointer-events:none}
+.art img{inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.12) brightness(.74);animation:push 24s ease-in-out infinite alternate;transition:filter .8s var(--ease)}
+@keyframes push{from{transform:scale(1.04)}to{transform:scale(1.18) translate3d(-3%,2%,0)}}
+.art__tone{inset:0;background:linear-gradient(155deg,var(--dusk),transparent 48%,var(--neon));mix-blend-mode:color;opacity:.7;transition:opacity .8s var(--ease)}
+.art__sweep{inset:-20% -60%;background:linear-gradient(105deg,transparent 43%,rgba(111,227,212,.28) 46.5%,rgba(241,238,223,.7) 50%,rgba(255,77,141,.28) 53.5%,transparent 57%);mix-blend-mode:screen;transform:translateX(-60%);animation:sweep 8s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes sweep{0%,50%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
+.art__dots{left:-30%;top:-30%;width:160%;height:160%;mix-blend-mode:screen;opacity:.9;animation:spin 48s linear infinite;
+  background:radial-gradient(circle,rgba(241,238,223,1) 0 1.8px,transparent 3px) 0 0/41px 37px,radial-gradient(circle,rgba(111,227,212,.9) 0 1.5px,transparent 2.6px) 13px 21px/53px 47px,radial-gradient(circle,rgba(255,77,141,.9) 0 1.5px,transparent 2.6px) 29px 7px/61px 59px;
+  -webkit-mask-image:radial-gradient(circle at 34% 30%,#000,transparent 40%),radial-gradient(circle at 70% 66%,#000,transparent 36%);mask-image:radial-gradient(circle at 34% 30%,#000,transparent 40%),radial-gradient(circle at 70% 66%,#000,transparent 36%)}
+@keyframes spin{to{transform:rotate(1turn)}}
+.art__spot{inset:0;background:radial-gradient(circle at var(--px,50%) var(--py,50%),rgba(241,238,223,.55),transparent 45%);mix-blend-mode:overlay;opacity:0;transition:opacity .6s}
+.art::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 90px 10px rgba(7,8,26,.75);pointer-events:none}
+.cover:hover .art__tone{opacity:.12}
+.cover:hover .art img{filter:contrast(1.1) brightness(1)}
+.cover:hover .art__dots{opacity:.35}
+.cover:hover .art__spot{opacity:1}
 @media (max-width:900px){
   .rec{grid-template-columns:minmax(0,1fr)}
   .tabs{flex-direction:row;gap:16px}.tab{flex-direction:column;gap:6px}
@@ -334,9 +355,12 @@ canvas{display:block}
           <canvas width="800" height="800" data-c="3" aria-hidden="true"></canvas>
           <canvas width="800" height="800" data-c="2" aria-hidden="true"></canvas>
           <canvas width="800" height="800" data-c="1" aria-hidden="true"></canvas>
-          <canvas width="800" height="800" data-c="0" aria-hidden="true"></canvas>
+          <div class="art" data-c="0">
+            <img src="assets/meet-me-in-tucson.webp" width="728" height="728" alt="Meet Me in Tucson artwork: the band recording in a studio, seen from above">
+            <span class="art__tone"></span><span class="art__dots"></span><span class="art__sweep"></span><span class="art__spot"></span>
+          </div>
         </div>
-        <p class="cover__cap mono dim">Placeholder artwork</p>
+        <p class="cover__cap mono dim" id="coverCap">Meet Me in Tucson · single artwork</p>
       </div>
       <div class="rec__info rv" style="--d:.16s" id="recInfo" aria-live="polite"></div>
     </div>
@@ -630,17 +654,28 @@ canvas{display:block}
     { y: 2023, k: 'Singles', h: 'Two singles', items: [['Stay Golden', 'Single'], ['Jodie Whittaker', 'Single']] },
     { y: 2022, k: 'EP', h: 'All This Madness', items: [['Artifacts', 'EP track'], ['Sun Crashes', 'EP track'], ['Bridges', 'EP track'], ['A Chapel in the City', 'EP track']] }
   ];
-  const recInfo = $('#recInfo'), tabs = $$('.tab'), covers = $$('#cover canvas'); let z = 4;
+  const recInfo = $('#recInfo'), tabs = $$('.tab'), covers = $$('#cover [data-c]'), coverEl = $('#cover'), coverCap = $('#coverCap'); let z = 4;
   function setAlbum(i, first) {
     const a = albums[i];
     tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i));
     recInfo.classList.remove('swap');
     recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener"><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
+    coverCap.textContent = i === 0 ? 'Meet Me in Tucson · single artwork' : 'Placeholder artwork';
     if (first) return;
     void recInfo.offsetWidth; recInfo.classList.add('swap');
     const c = covers.find(c => +c.dataset.c === i); c.style.zIndex = ++z; c.classList.remove('wipe'); void c.offsetWidth; c.classList.add('wipe');
   }
   tabs.forEach(t => t.onclick = () => setAlbum(+t.dataset.a));
+  if (!RM) {   // tilt toward the pointer and aim the spotlight at it (mouse only, so touch scrolling never tilts)
+    coverEl.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      const r = coverEl.getBoundingClientRect(), x = clamp((e.clientX - r.left) / r.width), y = clamp((e.clientY - r.top) / r.height);
+      coverEl.classList.add('tilt');
+      coverEl.style.setProperty('--ry', ((x - .5) * 14).toFixed(2) + 'deg'); coverEl.style.setProperty('--rx', ((.5 - y) * 14).toFixed(2) + 'deg');
+      coverEl.style.setProperty('--px', (x * 100).toFixed(1) + '%'); coverEl.style.setProperty('--py', (y * 100).toFixed(1) + '%');
+    });
+    coverEl.addEventListener('pointerleave', () => { coverEl.classList.remove('tilt'); coverEl.style.setProperty('--rx', '0deg'); coverEl.style.setProperty('--ry', '0deg'); });
+  }
   setAlbum(0, true);
 
   /* ---------- gallery ---------- */

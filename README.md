@@ -8,6 +8,7 @@ This is an unofficial design concept. The band's official site is [moonlightroll
 
 - `index.html`: the whole page. Markup, styles and script are in this one file.
 - `assets/hero-figure.webp`: the hero photo, cut out and re-toned from the band's own image.
+- `assets/meet-me-in-tucson.webp`: the single artwork for Meet Me in Tucson, shown as the 2026 cover.
 
 ## Preview
 
@@ -20,10 +21,11 @@ Real, taken from the band's site, Apple Music listing and October show poster:
 - Releases from 2022 to 2026, the three video titles, the bio, the streaming and social links, and the contact address.
 - The two remaining October 2026 shows.
 - The hero photo.
+- The Meet Me in Tucson artwork on the 2026 cover.
 
 Placeholder:
 
-- Cover art, gallery frames and the image strip are generated in the browser.
+- Cover art for 2022 to 2024, gallery frames and the image strip are generated in the browser.
 - The newsletter form shows its states but sends nothing.
 - Song rows link to the Spotify artist page, and the video button links to the YouTube channel, not to individual tracks or videos.
 
