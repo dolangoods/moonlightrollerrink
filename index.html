@@ -171,7 +171,8 @@ canvas{display:block}
 .cover:hover .art__spot{opacity:1}
 @media (max-width:900px){
   .rec{grid-template-columns:minmax(0,1fr)}
-  .tabs{flex-direction:row;gap:16px}.tab{flex-direction:column;gap:6px}
+  .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.tab{flex-direction:column;gap:6px}
+  .tab b{font-size:clamp(1rem,4.6vw,1.5rem);white-space:nowrap}
 }
 
 /* tour */
@@ -344,7 +345,7 @@ canvas{display:block}
   <section class="sec wrap" id="recordings">
     <div class="head">
       <h2 class="rv">Recordings</h2>
-      <p class="rv" style="--d:.1s">Nine singles and an EP since 2020. Pick a year to see what came out.</p>
+      <p class="rv" style="--d:.1s">Fourteen singles and an EP since 2012. Pick a year to see what came out.</p>
     </div>
     <div class="rec">
       <div class="tabs rv" role="tablist" aria-label="Releases by year">
@@ -352,7 +353,7 @@ canvas{display:block}
         <button class="tab" role="tab" aria-selected="false" data-a="1"><b>2024</b><span>4 singles</span></button>
         <button class="tab" role="tab" aria-selected="false" data-a="2"><b>2023</b><span>2 singles</span></button>
         <button class="tab" role="tab" aria-selected="false" data-a="3"><b>2022</b><span>1 EP</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="4"><b>2020</b><span>1 single</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="4" aria-label="2012 to 2020, 6 singles"><b>’12–’20</b><span>6 singles</span></button>
       </div>
       <div class="rv" style="--d:.08s">
         <div class="cover" id="cover">
@@ -426,8 +427,8 @@ canvas{display:block}
   <section class="sec wrap" id="about">
     <div class="life">
       <div>
-        <p class="mono dim rv">Songs released since 2020</p>
-        <p class="life__y" id="count" aria-label="14">14</p>
+        <p class="mono dim rv">Songs released since 2012</p>
+        <p class="life__y" id="count" aria-label="19">19</p>
       </div>
       <div class="life__t">
         <p class="big rv">Moonlight Roller Rink is the original music project of songwriter, vocalist, guitarist, and Washington, DC native Paul B.</p>
@@ -650,7 +651,12 @@ canvas{display:block}
     golden: ['stay-golden', 'Stay Golden', 'three violet hands reaching up under a glowing yellow square'],
     jodie: ['jodie-whittaker', 'Jodie Whittaker', 'an old television on legs showing flowers at sunset'],
     madness: ['all-this-madness', 'All This Madness', 'an iridescent liquid shape over a glowing sphere'],
-    hurricane: ['hurricane-eyes', 'Hurricane Eyes', 'a woman in silhouette against a sunset sky, hair blowing in the wind']
+    hurricane: ['hurricane-eyes', 'Hurricane Eyes', 'a woman in silhouette against a sunset sky, hair blowing in the wind'],
+    polaroids: ['polaroids', 'Polaroids', 'scattered blank polaroid frames over pink and violet blossoms'],
+    fingers: ['fingers-crossed', 'Fingers Crossed', 'a red painted hand on a green textured background'],
+    rooftops: ['rooftops', 'Rooftops', 'rain on glass in pale turquoise with soft round lights'],
+    ghost: ['ghost-town', 'Ghost Town', 'a face in a red and magenta screen print'],
+    spin: ['spin', 'Spin', 'a clear bass drum with the band name painted in teal, in black and white']
   };
   // each year shows its latest release's art; song rows carry their own
   const albums = [
@@ -658,7 +664,7 @@ canvas{display:block}
     { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby'], ['Hold Steady', 'Single · Jun 28, 2024', 'hold'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show']] },
     { y: 2023, k: 'Singles', h: 'Two singles', art: 'golden', items: [['Stay Golden', 'Single · May 12, 2023', 'golden'], ['Jodie Whittaker', 'Single · Mar 23, 2023', 'jodie']] },
     { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness'], ['A Chapel in the City', 'EP track', 'madness'], ['Bridges', 'EP track', 'madness'], ['Sun Crashes', 'EP track', 'madness'], ['Artifacts', 'EP track', 'madness']] },
-    { y: 2020, k: 'Single', h: 'Hurricane Eyes', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane']] }
+    { y: '2012–2020', k: 'Singles', h: 'Six early singles', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane'], ['Polaroids', 'Single · Feb 1, 2019', 'polaroids'], ['Fingers Crossed', 'Single · Mar 31, 2016', 'fingers'], ['Rooftops', 'Single · Jun 9, 2015', 'rooftops'], ['Ghost Town', 'Single · Apr 17, 2014', 'ghost'], ['Spin', 'Single · Dec 12, 2012', 'spin']] }
   ];
   const recInfo = $('#recInfo'), tabs = $$('.tab'), coverEl = $('#cover'), coverCap = $('#coverCap'); let z = 4;
   const layers = { tucson: $('[data-art="tucson"]', coverEl) };
@@ -790,7 +796,7 @@ canvas{display:block}
       l.style.setProperty('--o', (.14 + .86 * e).toFixed(3)); l.style.setProperty('--x', ((1 - e) * (i % 2 ? 9 : -9)).toFixed(2) + 'vw');
     });
     if (about._v) {
-      const r = about.getBoundingClientRect(), c = pad2(Math.round(14 * ease(clamp((vh - r.top) / (vh * .9)))));
+      const r = about.getBoundingClientRect(), c = pad2(Math.round(19 * ease(clamp((vh - r.top) / (vh * .9)))));
       if (c !== cn) countEl.textContent = cn = c;
     }
     frames.forEach(f => { if (!f._v) return; const r = f.getBoundingClientRect(), rel = clamp(((r.top + r.height / 2) - vh / 2) / vh, -1, 1); f.firstElementChild.style.transform = `translate3d(0,${(-rel * r.height * .11).toFixed(1)}px,0)`; });

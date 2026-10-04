@@ -8,7 +8,7 @@ This is an unofficial design concept. The band's official site is [moonlightroll
 
 - `index.html`: the whole page. Markup, styles and script are in this one file.
 - `assets/hero-figure.webp`: the hero photo, cut out and re-toned from the band's own image.
-- `assets/*.webp` (all the others): artwork for every release, from Hurricane Eyes (2020) to Meet Me in Tucson (2026).
+- `assets/*.webp` (all the others): artwork for every release, from Spin (2012) to Meet Me in Tucson (2026).
 
 ## Preview
 
@@ -18,7 +18,7 @@ Open `index.html` in a browser. There is no build step. Fonts (Space Grotesk and
 
 Real, taken from the band's site, Apple Music listing and October show poster:
 
-- Releases from 2020 to 2026, the three video titles, the bio, the streaming and social links, and the contact address.
+- Releases from 2012 to 2026, the three video titles, the bio, the streaming and social links, and the contact address.
 - The two remaining October 2026 shows.
 - The hero photo.
 - Release artwork and dates for every release.
