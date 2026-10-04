@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moonlight Roller Rink Concept</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: full-bleed stacked chapters. Display caps run edge to edge and change width as they move;
+   mono labels carry the small print; imagery is a generated rink at night: moon, mirror ball, neon rail. */
+:root{
+  --ink:#07081a; --ink-2:#12142e; --bone:#f1eedf; --dim:#9296b4; --line:#272b4c;
+  --neon:#ff4d8d; --glow:#6fe3d4; --dusk:#5146e0;
+  --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+  --body:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;
+  --gut:clamp(16px,4vw,56px);
+  --ease:cubic-bezier(.16,1,.3,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font:400 16px/1.5 var(--body);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p,figure,dl,dd{margin:0}
+canvas{display:block}
+:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+.mono{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.dim{color:var(--dim)}
+.wrap{padding-inline:var(--gut)}
+.sec{padding-block:clamp(72px,10vw,150px)}
+
+/* film grain over everything */
+.grain{position:fixed;inset:-40%;z-index:60;pointer-events:none;opacity:.085;animation:grain .9s steps(5) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-6%,4%)}40%{transform:translate(5%,-7%)}60%{transform:translate(-3%,-4%)}80%{transform:translate(7%,6%)}100%{transform:translate(0,0)}}
+
+/* reveal: dim and low at rest, full once in view */
+.js .rv{opacity:.18;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1.1s var(--ease);transition-delay:var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) var(--gut) 26px;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--ink) 88%,transparent),transparent);
+  transition:transform .6s var(--ease)}
+.nav.hide{transform:translateY(-110%)}
+.nav__logo{font:900 1.15rem/1 var(--display);font-variation-settings:"wdth" 125;letter-spacing:.01em}
+.nav ul{display:flex;gap:clamp(14px,2.2vw,34px);list-style:none;margin:0;padding:0}
+.lk{display:inline-block;overflow:hidden;height:1.4em;line-height:1.4;font:500 .72rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.lk span{display:block;position:relative;transition:transform .5s var(--ease)}
+.lk span::after{content:attr(data-t);position:absolute;left:0;top:100%;color:var(--glow)}
+.lk:hover span,.lk:focus-visible span{transform:translateY(-100%)}
+.menu-btn{display:none;padding:8px 0}
+.menu{position:fixed;inset:0;z-index:49;background:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:4px;padding:var(--gut);
+  clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
+.menu.open{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease),visibility 0s}
+.menu a{font:900 clamp(2.4rem,13vw,5rem)/1 var(--display);font-variation-settings:"wdth" 62;text-transform:uppercase;
+  transform:translateY(40px);opacity:0;transition:transform .7s var(--ease),opacity .5s;transition-delay:calc(var(--i)*60ms + 150ms)}
+.menu.open a{transform:none;opacity:1}
+@media (max-width:820px){.nav ul{display:none}.menu-btn{display:block}}
+
+/* hero */
+.hero{position:relative;min-height:min(94svh,1100px);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-top:120px}
+.hero__bg{position:absolute;inset:0;width:100%;height:100%}
+.hero__fig{position:absolute;left:50%;bottom:0;height:min(92%,150vw);width:auto;max-width:none;pointer-events:none;
+  transform:translate3d(-50%,var(--fy,0px),0);will-change:transform;
+  -webkit-mask-image:linear-gradient(#000 40%,transparent 88%);mask-image:linear-gradient(#000 40%,transparent 88%)}
+.hero__lead{display:flex;flex-direction:column;gap:14px}
+.hero__row{text-shadow:0 0 16px var(--ink),0 0 4px var(--ink)}
+@media (max-width:820px){.hero__fig{-webkit-mask-image:linear-gradient(#000 32%,transparent 76%);mask-image:linear-gradient(#000 32%,transparent 76%)}}
+.hero__cut{position:absolute;inset:0;background:var(--ink);opacity:0;pointer-events:none}
+.hero__cut.go{animation:cut 1.2s var(--ease)}
+@keyframes cut{from{opacity:.96}to{opacity:0}}
+.hero__shade{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(transparent,var(--ink));pointer-events:none}
+.hero__row{position:relative;display:grid;grid-template-columns:minmax(0,32ch) minmax(0,1fr);gap:24px;align-items:end;padding-inline:var(--gut);margin-bottom:clamp(14px,2vw,30px)}
+.np{display:flex;align-items:flex-start;gap:12px}
+.np__dot{width:9px;height:9px;margin-top:3px;border-radius:50%;background:var(--neon);animation:dot 1.6s ease-in-out infinite alternate}
+@keyframes dot{from{opacity:.35;transform:scale(.8)}to{opacity:1;transform:scale(1.15)}}
+.np__t{font:700 1.05rem/1.2 var(--display);font-variation-settings:"wdth" 110;margin-top:4px}
+.hero__intro{font-size:1.02rem;line-height:1.45;color:var(--bone)}
+.hero__ctl{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.ext{border-bottom:1px solid currentColor;padding-bottom:3px;transition:color .3s}
+.ext:hover,.ext:focus-visible{color:var(--glow)}
+.ticks{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 12px;list-style:none;margin:0;padding:0}
+.ticks button{position:relative;padding:6px 0 8px;font:500 .72rem/1 var(--mono);letter-spacing:.1em;color:var(--dim);transition:color .3s}
+.ticks button::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--bone);transform:scaleX(0);transform-origin:left}
+.ticks button[aria-current="true"]{color:var(--bone)}
+.ticks button[aria-current="true"]::after{animation:tick var(--dur,6s) linear forwards}
+@keyframes tick{to{transform:scaleX(1)}}
+.wordmark{position:relative;padding-inline:var(--gut);padding-bottom:clamp(10px,1.6vw,26px);line-height:.84;overflow:hidden}
+.wordmark span{display:block;width:max-content;white-space:nowrap;font:900 9vw/.84 var(--display);text-transform:uppercase;letter-spacing:calc(-.035em + (var(--wd,125) - 125) * .0019em)}
+@media (max-width:820px){
+  .hero__row{grid-template-columns:minmax(0,1fr);gap:18px}
+  .hero__ctl{align-items:flex-start}.ticks{justify-content:flex-start}
+}
+
+/* statement */
+.pulse{padding-block:clamp(80px,13vw,190px);overflow:hidden;overflow:clip}
+.pulse span{display:block;font:700 clamp(2.5rem,12.6vw,11.5rem)/.9 var(--display);letter-spacing:-.04em;text-transform:uppercase;
+  opacity:var(--o,1);transform:translate3d(var(--x,0),0,0);will-change:transform,opacity}
+.pulse span:nth-child(even){text-align:right}
+.pulse .hollow{color:transparent;-webkit-text-stroke:1.5px var(--bone)}
+
+/* marquee */
+.mq{overflow:hidden;border-block:1px solid var(--line)}
+.mq__t{display:flex;width:max-content;will-change:transform}
+.mq--names .mq__t span{display:flex;align-items:center;gap:clamp(28px,4vw,64px);padding:22px clamp(14px,2vw,32px);white-space:nowrap;
+  font:700 clamp(1rem,1.9vw,1.5rem)/1 var(--display);font-variation-settings:"wdth" 118;text-transform:uppercase}
+.mq--names .mq__t span::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--neon)}
+
+/* chapter heads */
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap;margin-bottom:clamp(32px,5vw,72px)}
+.head h2{font:700 clamp(2.3rem,7.4vw,6.6rem)/.9 var(--display);text-transform:uppercase;letter-spacing:-.04em;text-wrap:balance}
+.head p{max-width:38ch;color:var(--dim)}
+
+/* buttons */
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:14px 20px;border:1px solid var(--bone);
+  font:500 .72rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;transition:color .4s var(--ease)}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:translateY(101%);transition:transform .5s var(--ease)}
+.btn:hover,.btn:focus-visible{color:var(--ink)}
+.btn:hover::before,.btn:focus-visible::before{transform:none}
+.btn--solid{background:var(--bone);color:var(--ink)}
+.btn--solid::before{background:var(--glow)}
+
+/* recordings */
+.rec{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,5fr) minmax(0,4fr);gap:clamp(20px,3.4vw,56px);align-items:start}
+.tabs{display:flex;flex-direction:column}
+.tab{position:relative;display:flex;align-items:baseline;gap:14px;width:100%;text-align:left;padding:18px 0;border-top:1px solid var(--line);color:var(--dim);transition:color .4s}
+.tab::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--bone);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.tab[aria-selected="true"]{color:var(--bone)}
+.tab[aria-selected="true"]::before{transform:scaleX(1)}
+.tab b{font:800 clamp(1.5rem,2.6vw,2.4rem)/1 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums}
+.tab span{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.cover{position:relative;aspect-ratio:1;max-width:100%;overflow:hidden;background:var(--ink-2)}
+.cover canvas{position:absolute;inset:0;width:100%;height:100%}
+.wipe{animation:wipe 1.1s var(--ease)}
+@keyframes wipe{from{clip-path:inset(100% 0 0 0);transform:scale(1.14)}to{clip-path:inset(0 0 0 0);transform:none}}
+.rec__info{display:flex;flex-direction:column;gap:18px;min-width:0}
+.rec__info h3{font:800 clamp(1.8rem,3.4vw,3.2rem)/.92 var(--display);font-variation-settings:"wdth" 118;text-transform:uppercase;letter-spacing:-.01em}
+.rec__info dd{margin-top:4px}
+.rec__d{color:var(--dim);max-width:46ch}
+.swap>*{animation:rise .9s var(--ease) both}
+.swap>*:nth-child(2){animation-delay:.06s}.swap>*:nth-child(3){animation-delay:.12s}.swap>*:nth-child(4){animation-delay:.18s}.swap>*:nth-child(5){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@media (max-width:900px){
+  .rec{grid-template-columns:minmax(0,1fr)}
+  .tabs{flex-direction:row;gap:16px}.tab{flex-direction:column;gap:6px}
+}
+
+/* tour */
+.tour{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,4vw,64px);align-items:start}
+.frame{position:relative;overflow:hidden;background:var(--ink-2)}
+.frame canvas{position:absolute;left:0;top:-12%;width:100%;height:124%;object-fit:cover;will-change:transform}
+.tour .frame{aspect-ratio:4/5;position:sticky;top:90px}
+
+@media (max-width:900px){
+  .tour{grid-template-columns:minmax(0,1fr)}
+  .tour .frame{position:relative;top:0;aspect-ratio:16/10}
+}
+
+/* gallery */
+.rail{display:flex;gap:clamp(12px,1.6vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:var(--gut);scroll-padding-inline:var(--gut);scrollbar-width:none;cursor:grab}
+.rail::-webkit-scrollbar{display:none}
+.rail.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
+.rail figure{flex:0 0 auto;scroll-snap-align:start}
+.rail canvas{height:clamp(260px,46vw,580px);width:auto;max-width:calc(100vw - 2*var(--gut));object-fit:cover}
+.rail figcaption{margin-top:10px}
+.ctl{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:clamp(20px,3vw,36px)}
+.ctl__n{font:800 clamp(1.4rem,2.4vw,2rem)/1 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums}
+.ctl__b{display:flex;gap:10px}
+
+/* film */
+.vid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,3vw,48px);align-items:start}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--ink-2)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.stage__play{position:absolute;left:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,24px)}
+.stage__n{position:absolute;right:clamp(12px,2vw,24px);top:clamp(12px,2vw,24px)}
+.vid__meta{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.vid__meta h3{font:700 clamp(1.2rem,2.2vw,1.9rem)/1.1 var(--display);font-variation-settings:"wdth" 110}
+.vlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.vlist button{display:grid;grid-template-columns:88px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;padding:10px 0;border-bottom:1px solid var(--line);color:var(--dim);transition:color .3s,padding .5s var(--ease)}
+.vlist button:hover,.vlist button[aria-current="true"]{color:var(--bone)}
+.vlist button[aria-current="true"]{padding-left:10px;box-shadow:inset 3px 0 0 var(--neon)}
+.vlist canvas{width:88px;height:50px}
+.vlist span{min-width:0;font-weight:600;line-height:1.25}
+.vlist time{font:500 .72rem/1 var(--mono);letter-spacing:.1em;font-variant-numeric:tabular-nums}
+@media (max-width:900px){.vid{grid-template-columns:minmax(0,1fr)}}
+
+/* journey */
+.life{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,64px);align-items:end}
+.life__y{white-space:nowrap;font:900 clamp(5.5rem,21vw,20rem)/.76 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.life__t{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.life__t p.big{font-size:clamp(1.1rem,1.7vw,1.45rem);line-height:1.4;max-width:44ch}
+.life .frame{grid-column:1/-1;aspect-ratio:21/9;margin-top:clamp(20px,3vw,48px)}
+@media (max-width:900px){.life{grid-template-columns:minmax(0,1fr)}.life .frame{aspect-ratio:4/3}}
+
+/* newsletter */
+.news h2{font:800 clamp(1.8rem,5vw,4.6rem)/.98 var(--display);font-variation-settings:"wdth" 100;letter-spacing:-.02em;max-width:20ch;text-wrap:balance;margin-top:16px}
+.mq--strip{border:0;margin-block:clamp(36px,6vw,80px)}
+.mq--strip .mq__t{gap:clamp(8px,1vw,14px);padding-right:clamp(8px,1vw,14px)}
+.mq--strip canvas{height:clamp(150px,20vw,270px);width:auto;flex:0 0 auto}
+.form{display:flex;flex-wrap:wrap;gap:10px;max-width:640px}
+.form input{flex:1 1 240px;min-width:0;padding:14px 16px;background:transparent;border:1px solid var(--line);color:var(--bone);font:400 1rem/1.2 var(--body);transition:border-color .3s}
+.form input::placeholder{color:var(--dim)}
+.form input:focus{border-color:var(--bone);outline:none}
+.form__msg{margin-top:14px;min-height:1.4em;color:var(--glow)}
+.form__note{margin-top:8px;color:var(--dim);font-size:.85rem}
+
+/* footer */
+.foot{border-top:1px solid var(--line);padding-top:clamp(40px,6vw,80px);overflow:hidden}
+.foot__cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:32px;margin-bottom:clamp(40px,7vw,100px)}
+.foot__cols ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.foot__cols a{color:var(--bone)}
+.foot__cols a:hover{color:var(--glow)}
+.foot__end{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;padding-block:18px 26px;color:var(--dim);font-size:.85rem}
+.foot .wordmark{padding-bottom:0}
+.hero .wordmark{padding-bottom:58px}
+.foot__end{padding-bottom:64px}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv{opacity:1;transform:none}
+  .grain{animation:none}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* release rows + live + concept tag */
+.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.row a{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 10px;border-bottom:1px solid var(--line);transition:color .35s,padding .5s var(--ease)}
+.row a::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
+.row a:hover,.row a:focus-visible{color:var(--ink);padding-left:20px}
+.row a:hover::before,.row a:focus-visible::before{transform:scaleY(1)}
+.row span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.row strong{font:700 clamp(1.05rem,1.5vw,1.3rem)/1.15 var(--display);font-variation-settings:"wdth" 108}
+.row em{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim);transition:color .35s}
+.row a:hover em,.row a:focus-visible em{color:var(--ink)}
+.row i{font-style:normal;white-space:nowrap}
+.cover__cap{margin-top:10px}
+.live{display:flex;flex-direction:column;gap:22px;align-items:flex-start;align-self:center;min-width:0}
+.gigs{list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--line)}
+.gig{position:relative;isolation:isolate;display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:26px 12px;border-bottom:1px solid var(--line);transition:color .35s,padding .5s var(--ease)}
+.gig::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
+.gig:hover{color:var(--ink);padding-left:22px}
+.gig:hover::before{transform:scaleY(1)}
+.gig time{white-space:nowrap;font:800 1.6rem/1 var(--display);font-variation-settings:"wdth" 62;text-transform:uppercase;font-variant-numeric:tabular-nums}
+.gig strong{min-width:0;font:700 clamp(1.1rem,1.9vw,1.6rem)/1.15 var(--display);font-variation-settings:"wdth" 108}
+.gig em{white-space:nowrap;font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim);transition:color .35s}
+.gig:hover em{color:var(--ink)}
+@media (max-width:900px){.gig{grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:20px 8px}.gig strong{grid-column:1/-1}}
+.live__big{font:800 clamp(1.9rem,4.6vw,4.2rem)/.98 var(--display);font-variation-settings:"wdth" 100;letter-spacing:-.02em;max-width:16ch;text-wrap:balance}
+.live p.dim{max-width:44ch}
+.mail{user-select:all;overflow-wrap:anywhere}
+.tag{position:fixed;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:55;padding:8px 12px;background:var(--ink-2);border:1px solid var(--line);color:var(--bone);font:500 .66rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="grain" id="grain" aria-hidden="true"></div>
+<p class="tag">Design concept · not the official site</p>
+
+<header class="nav" id="nav">
+  <a class="nav__logo" href="#top" aria-label="Moonlight Roller Rink, back to top">MRR</a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a class="lk" href="#recordings"><span data-t="Music">Music</span></a></li>
+      <li><a class="lk" href="#live"><span data-t="Live">Live</span></a></li>
+      <li><a class="lk" href="#gallery"><span data-t="Gallery">Gallery</span></a></li>
+      <li><a class="lk" href="#videos"><span data-t="Videos">Videos</span></a></li>
+      <li><a class="lk" href="#about"><span data-t="About">About</span></a></li>
+      <li><a class="lk" href="#news"><span data-t="Newsletter">Newsletter</span></a></li>
+    </ul>
+  </nav>
+  <button class="menu-btn mono" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+</header>
+<div class="menu" id="menu">
+  <a href="#recordings" style="--i:0">Music</a>
+  <a href="#live" style="--i:1">Live</a>
+  <a href="#gallery" style="--i:2">Gallery</a>
+  <a href="#videos" style="--i:3">Videos</a>
+  <a href="#about" style="--i:4">About</a>
+  <a href="#news" style="--i:5">Newsletter</a>
+</div>
+
+<main>
+  <section class="hero" id="top">
+    <canvas class="hero__bg" id="heroBg" aria-hidden="true"></canvas>
+    <img class="hero__fig" id="heroImg" src="assets/hero-figure.webp" alt="A figure in a plaid shirt, head lost in motion blur, standing in front of a full moon">
+    <div class="hero__cut" id="heroCut"></div>
+    <div class="hero__shade"></div>
+    <div class="hero__row">
+      <div class="hero__lead">
+        <div class="np">
+          <span class="np__dot" aria-hidden="true"></span>
+          <div>
+            <p class="mono">Latest single · May 21, 2026</p>
+            <p class="np__t">Meet Me in Tucson</p>
+          </div>
+        </div>
+        <p class="hero__intro">The original music project of Washington, DC songwriter Paul B, recorded with a rotating cast of friends.</p>
+      </div>
+      <div class="hero__ctl">
+        <a class="ext mono" href="https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+        <ol class="ticks" id="ticks" aria-label="Hero lighting"></ol>
+      </div>
+    </div>
+    <h1 class="wordmark" id="heroMark"><span>Moonlight</span><span>Roller Rink</span></h1>
+  </section>
+
+  <section class="pulse wrap" id="pulse">
+    <h2><span>Musical</span><span>chairs</span><span class="hollow">with</span><span class="hollow">some of</span><span>the area’s</span><span>best</span></h2>
+  </section>
+
+  <div class="mq mq--names" data-mq="1" data-rep="8" aria-label="Streaming on Spotify, Apple Music, Amazon Music and YouTube">
+    <div class="mq__t" aria-hidden="true"><span>Spotify</span><span>Apple Music</span><span>Amazon Music</span><span>YouTube</span></div>
+  </div>
+
+  <section class="sec wrap" id="recordings">
+    <div class="head">
+      <h2 class="rv">Recordings</h2>
+      <p class="rv" style="--d:.1s">Eight singles and an EP since 2022. Pick a year to see what came out.</p>
+    </div>
+    <div class="rec">
+      <div class="tabs rv" role="tablist" aria-label="Releases by year">
+        <button class="tab" role="tab" aria-selected="true" data-a="0"><b>2026</b><span>2 singles</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="1"><b>2024</b><span>4 singles</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="2"><b>2023</b><span>2 singles</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="3"><b>2022</b><span>All This Madness EP</span></button>
+      </div>
+      <div class="rv" style="--d:.08s">
+        <div class="cover" id="cover">
+          <canvas width="800" height="800" data-c="3" aria-hidden="true"></canvas>
+          <canvas width="800" height="800" data-c="2" aria-hidden="true"></canvas>
+          <canvas width="800" height="800" data-c="1" aria-hidden="true"></canvas>
+          <canvas width="800" height="800" data-c="0" aria-hidden="true"></canvas>
+        </div>
+        <p class="cover__cap mono dim">Placeholder artwork</p>
+      </div>
+      <div class="rec__info rv" style="--d:.16s" id="recInfo" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="live">
+    <div class="head">
+      <h2 class="rv">Upcoming shows</h2>
+      <p class="rv" style="--d:.1s">Two acoustic shows left this October.</p>
+    </div>
+    <div class="tour">
+      <div class="frame rv" data-par><canvas width="720" height="1000" data-s="41" data-k="ball beams" role="img" aria-label="Mirror ball under light beams"></canvas></div>
+      <div class="live">
+        <p class="mono dim rv">Live acoustic · October</p>
+        <ol class="gigs rv" style="--d:.06s">
+          <li class="gig"><time datetime="2026-10-17">Sat Oct 17</time><strong>Mellow Mushroom, Chantilly</strong><em>6 – 9 PM</em></li>
+          <li class="gig"><time datetime="2026-10-25">Sun Oct 25</time><strong>Bluemont Brewery &amp; Winery</strong><em>2 – 5 PM</em></li>
+        </ol>
+        <p class="dim rv" style="--d:.12s">Paul Bonsiero, solo and acoustic. Songs you know, sing-alongs, and a few originals.</p>
+        <a class="btn rv" style="--d:.18s" href="#news">Get show news</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="gallery">
+    <div class="head wrap">
+      <h2 class="rv">Gallery</h2>
+      <p class="rv" style="--d:.1s">Generated stand-ins for now. Band photography goes here. Drag the strip, or step through it.</p>
+    </div>
+    <div class="rail" id="rail" tabindex="0" aria-label="Gallery, scroll sideways">
+      <figure><canvas width="720" height="900" data-s="3" data-k="moon rink" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 01</figcaption></figure>
+      <figure><canvas width="1200" height="800" data-s="18" data-k="ball beams rink" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 02</figcaption></figure>
+      <figure><canvas width="720" height="900" data-s="27" data-k="ball bw" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 03</figcaption></figure>
+      <figure><canvas width="1200" height="800" data-s="52" data-k="moon rink beams" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 04</figcaption></figure>
+      <figure><canvas width="900" height="900" data-s="66" data-k="ball" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 05</figcaption></figure>
+      <figure><canvas width="1200" height="800" data-s="85" data-k="rink beams" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 06</figcaption></figure>
+    </div>
+    <div class="ctl wrap">
+      <p class="ctl__n" id="gCount" aria-live="polite">01 / 06</p>
+      <div class="ctl__b"><button class="btn" id="gPrev">Prev</button><button class="btn" id="gNext">Next</button></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="videos">
+    <div class="head">
+      <h2 class="rv">Videos</h2>
+      <p class="rv" style="--d:.1s">Three music videos. Choose one from the list, then watch it on YouTube.</p>
+    </div>
+    <div class="vid">
+      <div class="rv">
+        <div class="stage" id="stage">
+          <canvas width="960" height="540" id="stageCv" aria-hidden="true"></canvas>
+          <p class="stage__n mono" id="vCount">01 / 03</p>
+          <a class="btn btn--solid stage__play" href="https://www.youtube.com/channel/UCc_iNGbLGBryrJdyDx2ZHcQ" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+        </div>
+        <div class="vid__meta" id="vMeta" aria-live="polite"></div>
+      </div>
+      <ol class="vlist rv" style="--d:.1s" id="vList"></ol>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="about">
+    <div class="life">
+      <div>
+        <p class="mono dim rv">Songs released since 2022</p>
+        <p class="life__y" id="count" aria-label="12">12</p>
+      </div>
+      <div class="life__t">
+        <p class="big rv">Moonlight Roller Rink is the original music project of songwriter, vocalist, guitarist, and Washington, DC native Paul B.</p>
+        <p class="dim rv" style="--d:.08s">Most songs have a different assortment of musicians on each recording, but several are repeat players and collaborators, including Richmond, Virginia based musician Matt Waller. Quite literally musical chairs with some of the area’s best, Moonlight Roller Rink is a collective composition of friends and fellow music-makers creating art from many unique perspectives, ideas, and personal experiences.</p>
+        <a class="btn rv" style="--d:.16s" href="https://www.instagram.com/moonlight_roller_rink_project" target="_blank" rel="noopener">Follow on Instagram ↗</a>
+      </div>
+      <div class="frame rv" data-par><canvas width="1400" height="760" data-s="120" data-k="moon rink beams" role="img" aria-label="Moon over an empty rink"></canvas></div>
+    </div>
+  </section>
+
+  <section class="sec" id="news">
+    <div class="wrap news">
+      <p class="mono dim rv">Newsletter</p>
+      <h2 class="rv" style="--d:.06s">New songs, show dates and the occasional update, by email.</h2>
+    </div>
+    <div class="mq mq--strip" data-mq="-1" data-rep="3" aria-hidden="true">
+      <div class="mq__t">
+        <canvas width="300" height="375" data-s="201" data-k="ball"></canvas><canvas width="560" height="375" data-s="202" data-k="moon rink"></canvas><canvas width="300" height="375" data-s="203" data-k="beams bw"></canvas><canvas width="375" height="375" data-s="204" data-k="ball beams"></canvas><canvas width="560" height="375" data-s="205" data-k="rink beams"></canvas><canvas width="300" height="375" data-s="206" data-k="moon bw"></canvas><canvas width="560" height="375" data-s="207" data-k="ball rink"></canvas><canvas width="300" height="375" data-s="208" data-k="moon"></canvas>
+      </div>
+    </div>
+    <div class="wrap">
+      <form class="form rv" id="form" novalidate>
+        <input id="email" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address">
+        <button class="btn btn--solid" type="submit">Join the list</button>
+      </form>
+      <p class="form__msg" id="formMsg" role="status"></p>
+      <p class="form__note">This is a design concept, so the form shows its states without sending anything.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="foot">
+  <div class="wrap foot__cols">
+    <div><p class="mono dim">Links</p><ul><li><a href="#recordings">Music</a></li><li><a href="#live">Live</a></li><li><a href="#videos">Videos</a></li><li><a href="#about">About</a></li></ul></div>
+    <div><p class="mono dim">Listen</p><ul>
+      <li><a href="https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS" target="_blank" rel="noopener">Spotify</a></li>
+      <li><a href="https://music.apple.com/us/artist/moonlight-roller-rink/589244345" target="_blank" rel="noopener">Apple Music</a></li>
+      <li><a href="https://amazon.com/music/player/artists/B00AQVNLSG/moonlight-roller-rink" target="_blank" rel="noopener">Amazon Music</a></li>
+      <li><a href="https://www.youtube.com/channel/UCc_iNGbLGBryrJdyDx2ZHcQ" target="_blank" rel="noopener">YouTube</a></li></ul></div>
+    <div><p class="mono dim">Follow</p><ul>
+      <li><a href="https://www.instagram.com/moonlight_roller_rink_project" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://www.instagram.com/radio_flyer_records" target="_blank" rel="noopener">Radio Flyer Records</a></li></ul></div>
+    <div><p class="mono dim">Contact</p><ul><li class="mail">paul@moonlightrollerrink.com</li></ul></div>
+  </div>
+  <p class="wordmark" id="footMark"><span>Moonlight</span><span>Roller Rink</span></p>
+  <div class="wrap foot__end">
+    <span>Unofficial design concept. The band’s official site is moonlightrollerrink.com. The hero photo is the band’s own, re-toned for this concept; all other artwork is a generated placeholder.</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const root = document.documentElement;
+  root.classList.add('js');
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tok = n => getComputedStyle(root).getPropertyValue(n).trim();
+  const C = { ink: tok('--ink'), ink2: tok('--ink-2'), bone: tok('--bone'), neon: tok('--neon'), glow: tok('--glow'), dusk: tok('--dusk') };
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = p => 1 - Math.pow(1 - p, 4);
+  const pad2 = n => String(n).padStart(2, '0');
+  const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+  const rng = seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const SPOTIFY = 'https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS', APPLE = 'https://music.apple.com/us/artist/moonlight-roller-rink/589244345';
+
+  /* ---------- generated imagery: a rink at night ---------- */
+  function scene(ctx, w, h, seed, o = {}) {
+    const r = rng(seed), t = o.t || 0, M = Math.max(w, h), m = Math.min(w, h);
+    const cols = o.bw ? [C.bone, C.bone] : [C.dusk, C.neon, C.dusk, C.glow, C.neon];
+    const spark = o.bw ? [C.bone] : [C.bone, C.neon, C.glow, C.bone];
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = C.ink; ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'lighter';
+    const n = 3 + Math.floor(r() * 3);
+    for (let i = 0; i < n; i++) {
+      const ph = r() * 6.28, sp = .15 + r() * .3;
+      const x = (r() * 1.1 - .05 + Math.sin(t * sp + ph) * .09) * w, y = (r() * .7 + Math.cos(t * sp * .8 + ph) * .07) * h;
+      const rad = (.28 + r() * .5) * M, c = cols[Math.floor(r() * cols.length)], a = (.2 + r() * .34) * (o.bw ? .45 : 1);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, rgba(c, a)); g.addColorStop(.45, rgba(c, a * .32)); g.addColorStop(1, rgba(c, 0));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    }
+    const beams = o.beams ? 3 + Math.floor(r() * 3) : 0;
+    for (let i = 0; i < beams; i++) {
+      const x0 = (.1 + r() * .8) * w, x1 = x0 + (r() - .5 + Math.sin(t * .45 + i * 1.7) * .14) * w * .9, wd = (.03 + r() * .06) * w, c = spark[Math.floor(r() * spark.length)];
+      const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, rgba(c, o.bw ? .26 : .4)); g.addColorStop(1, rgba(c, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(x0 - 2, 0); ctx.lineTo(x0 + 2, 0); ctx.lineTo(x1 + wd, h); ctx.lineTo(x1 - wd, h); ctx.fill();
+    }
+    let mx = w * (.18 + r() * .64), my = h * (.2 + r() * .14), R = m * (.09 + r() * .06); if (o.mr) { mx = o.mx * w; my = o.my * h; R = o.mr * h; }
+    const HALO = o.mr ? 2.3 : 3.6, cr = [r(), r(), r(), r(), r(), r(), r(), r(), r()];
+    if (o.moon) {
+      const g = ctx.createRadialGradient(mx, my, R * .9, mx, my, R * HALO);
+      g.addColorStop(0, rgba(C.bone, .34)); g.addColorStop(1, rgba(C.bone, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, R * HALO, 0, 7); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = C.bone; ctx.beginPath(); ctx.arc(mx, my, R, 0, 7); ctx.fill();
+      ctx.fillStyle = rgba(C.ink, .1);
+      if (!o.mr) for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(mx + (cr[i * 3] - .5) * R * 1.1, my + (cr[i * 3 + 1] - .5) * R * 1.1, R * (.1 + cr[i * 3 + 2] * .16), 0, 7); ctx.fill(); }
+      ctx.globalCompositeOperation = 'lighter';
+    }
+    if (o.waves) {   // sound waves: wobbling rings that leave the moon and fade as they travel
+      ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round';
+      const NW = 8, span = M * .6;
+      for (let i = 0; i < NW; i++) {
+        const p = (t * .09 + i / NW) % 1, rad = R * 1.05 + p * span, a = Math.pow(1 - p, 1.7) * .62 * Math.min(1, p * 9);
+        const amp = R * (.014 + .075 * p), k = 5 + (i % 3) * 2, c = spark[i % spark.length];
+        ctx.strokeStyle = rgba(c, a); ctx.lineWidth = Math.max(1, m * .003) * (1.7 - p);
+        ctx.beginPath();
+        for (let q = 0; q <= 140; q++) {
+          const ang = q / 140 * 6.2832, rr = rad + amp * Math.sin(ang * k + t * 2.1 + i * 1.3) + amp * .5 * Math.sin(ang * (k * 2 + 1) - t * 3.2 + i);
+          const x = mx + Math.cos(ang) * rr, y = my + Math.sin(ang) * rr; q ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.closePath(); ctx.stroke();
+      }
+    }
+    if (o.rink) {
+      const hy = h * .68;
+      ctx.globalCompositeOperation = 'source-over';
+      const fg = ctx.createLinearGradient(0, hy, 0, h); fg.addColorStop(0, rgba(C.ink, .5)); fg.addColorStop(1, rgba(C.ink, .92));
+      ctx.fillStyle = fg; ctx.fillRect(0, hy, w, h - hy);
+      ctx.globalCompositeOperation = 'lighter';
+      const rc = o.bw ? C.bone : C.neon, rg = ctx.createLinearGradient(0, hy - h * .03, 0, hy + h * .03);
+      rg.addColorStop(0, rgba(rc, 0)); rg.addColorStop(.5, rgba(rc, .85)); rg.addColorStop(1, rgba(rc, 0));
+      ctx.fillStyle = rg; ctx.fillRect(0, hy - h * .03, w, h * .06);
+      ctx.save(); ctx.beginPath(); ctx.rect(0, hy, w, h - hy); ctx.clip();
+      ctx.strokeStyle = rgba(C.bone, .17); ctx.lineWidth = Math.max(1, w * .0016);
+      for (let i = 1; i <= 5; i++) { ctx.beginPath(); ctx.ellipse(w * .5, h * 1.02, w * (.18 + i * .16), h * (.05 + i * .065), 0, Math.PI, 2 * Math.PI); ctx.stroke(); }
+      for (let i = 0; i < 6; i++) { const x = r() * w, ww = (.02 + r() * .05) * w, c = spark[Math.floor(r() * spark.length)], sg = ctx.createLinearGradient(0, hy, 0, h); sg.addColorStop(0, rgba(c, .3)); sg.addColorStop(1, rgba(c, 0)); ctx.fillStyle = sg; ctx.fillRect(x - ww / 2, hy, ww, h - hy); }
+      ctx.restore();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    if (o.ball) {
+      const bx = w * (o.moon ? (mx < w / 2 ? .68 : .32) : .5), by = h * (o.hero ? .23 : .3), rb = m * (o.hero ? .13 : .17), N = 9;
+      ctx.strokeStyle = rgba(C.bone, .4); ctx.lineWidth = Math.max(1, m * .003); ctx.beginPath(); ctx.moveTo(bx, 0); ctx.lineTo(bx, by - rb); ctx.stroke();
+      ctx.fillStyle = C.ink2; ctx.beginPath(); ctx.arc(bx, by, rb, 0, 7); ctx.fill();
+      for (let i = -N; i <= N; i++) {
+        const lat = i / (N + .5) * Math.PI / 2, cy = Math.sin(lat), cl = Math.cos(lat), cnt = Math.max(4, Math.round(3.2 * N * cl));
+        for (let j = 0; j < cnt; j++) {
+          const lon = (j / cnt * 6.2832 + t * .35 + i * .11) % 6.2832, z = Math.cos(lon); if (z <= .05) continue;
+          const hs = Math.abs(Math.sin(i * 12.9898 + j * 78.233) * 43758.5453) % 1, c = spark[Math.floor(hs * spark.length)];
+          const fw = rb * cl * (6.2832 / cnt) * z * .8, fh = rb * cl * (Math.PI / (2 * N + 1)) * .8;
+          ctx.fillStyle = rgba(c, (.2 + .8 * hs) * z * (hs > .78 ? 1 : .55));
+          ctx.fillRect(bx + rb * cl * Math.sin(lon) - fw / 2, by + rb * cy - fh / 2, fw, fh);
+        }
+      }
+      ctx.globalCompositeOperation = 'lighter';
+      const hg = ctx.createRadialGradient(bx - rb * .35, by - rb * .4, 0, bx - rb * .35, by - rb * .4, rb * .9);
+      hg.addColorStop(0, rgba(C.bone, .4)); hg.addColorStop(1, rgba(C.bone, 0)); ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(bx, by, rb, 0, 7); ctx.fill();
+    }
+    if (o.ball || o.dots) {
+      ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 46; k++) {
+        const a = r() * 6.2832 + t * (.18 + (k % 3) * .04), e = r(), rr = (.005 + r() * .011) * M, c = spark[Math.floor(r() * spark.length)], z = Math.cos(a);
+        if (z <= 0) continue;
+        ctx.fillStyle = rgba(c, .6 * z); ctx.beginPath(); ctx.ellipse((.5 + .62 * Math.sin(a)) * w, (.05 + e * .92) * h, rr * (2 - z), rr, 0, 0, 7); ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    const v = ctx.createRadialGradient(w / 2, h / 2, m * .3, w / 2, h / 2, M * .75);
+    v.addColorStop(0, rgba(C.ink, 0)); v.addColorStop(1, rgba(C.ink, .72));
+    ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+  }
+  const opts = k => ({ moon: /moon/.test(k), ball: /ball/.test(k), rink: /rink/.test(k), beams: /beams/.test(k), bw: /bw/.test(k) });
+
+  function cover(ctx, w, h, k) {
+    ctx.fillStyle = C.ink2; ctx.fillRect(0, 0, w, h); ctx.strokeStyle = C.bone; ctx.fillStyle = C.bone;
+    if (k === 0) { ctx.lineWidth = 1.3; ctx.globalAlpha = .8; for (const cx of [.42, .58]) for (let r = 8; r < w * .44; r += 9) { ctx.beginPath(); ctx.arc(w * cx, h * .5, r, 0, 7); ctx.stroke(); } }
+    if (k === 1) { const r = rng(7), n = 64, bw = w * .8 / n; ctx.globalAlpha = .92; for (let i = 0; i < n; i++) { const env = Math.pow(Math.sin(i / n * Math.PI), 1.5), a = (.15 + r() * .85) * env * h * .36; ctx.fillRect(w * .1 + i * bw, h * .5 - a, bw * .45, a * 2); } }
+    if (k === 2) { const n = 26, g = w * .8 / n; ctx.globalAlpha = .92; for (let y = 0; y <= n; y++) for (let x = 0; x <= n; x++) { const px = w * .1 + x * g, py = h * .1 + y * g, d = Math.hypot(px - w * .5, py - h * .5) / (w * .4); ctx.beginPath(); ctx.arc(px, py, d < 1 ? g * .44 * (1 - d * .78) : g * .06, 0, 7); ctx.fill(); } }
+    if (k === 3) { const n = 5, R = w * .07; ctx.globalAlpha = .95; for (let i = 0; i < n; i++) { const x = w * (.14 + i * .18), y = h * .5; ctx.fillStyle = C.bone; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill(); ctx.fillStyle = C.ink2; ctx.beginPath(); ctx.arc(x + (i - 2) * R * .75, y, R * (i === 2 ? 0 : 1.02), 0, 7); ctx.fill(); } ctx.fillStyle = C.bone; }
+    ctx.globalAlpha = 1;
+  }
+  const KIND = [0, 1, 3, 2];
+
+  (() => { const c = document.createElement('canvas'); c.width = c.height = 140; const x = c.getContext('2d'), d = x.createImageData(140, 140);
+    for (let i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.random() * 255; }
+    x.putImageData(d, 0, 0); $('#grain').style.backgroundImage = `url(${c.toDataURL()})`; })();
+
+  /* ---------- marquees (duplicate first, paint after) ---------- */
+  const mqs = $$('[data-mq]').map(el => { const t = el.firstElementChild, rep = +el.dataset.rep; t.innerHTML = Array(rep).fill(t.innerHTML).join(''); return { el, t, rep, dir: +el.dataset.mq, x: 0, w: 0 }; });
+  const measureMq = () => mqs.forEach(m => m.w = m.t.scrollWidth / m.rep);
+
+  $$('canvas[data-s]').forEach(c => scene(c.getContext('2d'), c.width, c.height, +c.dataset.s, { ...opts(c.dataset.k || ''), t: +c.dataset.s }));
+  $$('canvas[data-c]').forEach(c => cover(c.getContext('2d'), c.width, c.height, KIND[+c.dataset.c]));
+
+  /* ---------- wordmarks: fit each line to the width, then breathe ---------- */
+  const heroMark = $('#heroMark'), footMark = $('#footMark');
+  function fit() {
+    $$('.wordmark span').forEach(s => {
+      const box = s.parentElement, cs = getComputedStyle(box);
+      const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      s.style.setProperty('--wd', 125); s.style.fontSize = '100px';
+      const w = s.getBoundingClientRect().width;
+      s.style.fontSize = (100 * avail / w * .995) + 'px';
+      s.style.removeProperty('--wd');
+    });
+  }
+
+  /* ---------- hero ---------- */
+  const hero = $('#top'), hc = $('#heroBg'), hx = hc.getContext('2d'), cut = $('#heroCut'), ticks = $('#ticks');
+  const slides = [{ s: 11, rink: 1 }, { s: 23, beams: 1 }, { s: 37, rink: 1, beams: 1 }, { s: 44 }, { s: 58, beams: 1, bw: 1 }, { s: 61, rink: 1 }];
+  const DUR = 7000; let slide = 0, slideT = performance.now();
+  ticks.style.setProperty('--dur', DUR + 'ms');
+  slides.forEach((_, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.textContent = pad2(i + 1); b.setAttribute('aria-label', 'Frame ' + (i + 1)); b.onclick = () => setSlide(i); li.append(b); ticks.append(li); });
+  const tickBtns = $$('button', ticks);
+  function setSlide(i, quiet) {
+    slide = (i + slides.length) % slides.length; slideT = performance.now();
+    tickBtns.forEach((b, j) => b.setAttribute('aria-current', j === slide));
+    if (!quiet && !RM) { cut.classList.remove('go'); void cut.offsetWidth; cut.classList.add('go'); }
+    if (RM) drawHero(0);
+  }
+  const heroImg = $('#heroImg'), moonAt = { mx: .5, my: .26, mr: .26 }; let heroP = 0, riseP = RM ? 1 : 0;
+  function sizeHero() {
+    const W = hero.offsetWidth, H = hero.offsetHeight, w = Math.max(280, Math.min(1280, W)); hc.width = w; hc.height = Math.max(180, Math.round(w * H / W));
+    const fh = heroImg.offsetHeight || H * .92;   // moon sits behind the head: 20% down the figure, a bit wider than the shoulders
+    moonAt.my = (H - fh + fh * .2) / H; moonAt.mr = fh * .283 / H;
+  }
+  function drawHero(now) { const sl = slides[slide]; scene(hx, hc.width, hc.height, sl.s, { ...sl, moon: 1, dots: 1, waves: 1, t: now / 1000, mx: moonAt.mx, my: moonAt.my + (1 - riseP) * .16 - heroP * .05, mr: moonAt.mr }); }
+
+  /* ---------- recordings ---------- */
+  const albums = [
+    { y: 2026, k: 'Singles', h: 'Two new singles', items: [['Meet Me in Tucson', 'Single · May 21, 2026'], ['Every Breaking Color', 'Single']] },
+    { y: 2024, k: 'Singles', h: 'Four singles', items: [['Bobby Pins', 'Single'], ['Hold Steady', 'Single'], ['Crystal Skulls', 'Single'], ['The Show Goes On', 'Single']] },
+    { y: 2023, k: 'Singles', h: 'Two singles', items: [['Stay Golden', 'Single'], ['Jodie Whittaker', 'Single']] },
+    { y: 2022, k: 'EP', h: 'All This Madness', items: [['Artifacts', 'EP track'], ['Sun Crashes', 'EP track'], ['Bridges', 'EP track'], ['A Chapel in the City', 'EP track']] }
+  ];
+  const recInfo = $('#recInfo'), tabs = $$('.tab'), covers = $$('#cover canvas'); let z = 4;
+  function setAlbum(i, first) {
+    const a = albums[i];
+    tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i));
+    recInfo.classList.remove('swap');
+    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener"><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
+    if (first) return;
+    void recInfo.offsetWidth; recInfo.classList.add('swap');
+    const c = covers.find(c => +c.dataset.c === i); c.style.zIndex = ++z; c.classList.remove('wipe'); void c.offsetWidth; c.classList.add('wipe');
+  }
+  tabs.forEach(t => t.onclick = () => setAlbum(+t.dataset.a));
+  setAlbum(0, true);
+
+  /* ---------- gallery ---------- */
+  const rail = $('#rail'), figs = $$('figure', rail), gCount = $('#gCount');
+  const railL = () => rail.getBoundingClientRect().left + parseFloat(getComputedStyle(rail).paddingLeft);
+  const near = () => { const l = railL(); let b = 0, bd = 1e9; figs.forEach((f, i) => { const d = Math.abs(f.getBoundingClientRect().left - l); if (d < bd) { bd = d; b = i; } }); return b; };
+  const gUpdate = () => { const end = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4; gCount.textContent = pad2((end ? figs.length - 1 : near()) + 1) + ' / ' + pad2(figs.length); };
+  const gGo = i => { i = clamp(i, 0, figs.length - 1); rail.scrollTo({ left: figs[i].getBoundingClientRect().left - railL() + rail.scrollLeft, behavior: RM ? 'auto' : 'smooth' }); };
+  rail.addEventListener('scroll', gUpdate, { passive: true });
+  $('#gPrev').onclick = () => gGo(near() - 1); $('#gNext').onclick = () => gGo(near() + 1);
+  let drag = null;
+  rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; drag = { x: e.clientX, l: rail.scrollLeft }; rail.classList.add('drag'); rail.setPointerCapture(e.pointerId); });
+  rail.addEventListener('pointermove', e => { if (drag) rail.scrollLeft = drag.l - (e.clientX - drag.x); });
+  const endDrag = () => { if (!drag) return; drag = null; rail.classList.remove('drag'); gGo(near()); };
+  rail.addEventListener('pointerup', endDrag); rail.addEventListener('pointercancel', endDrag);
+
+  /* ---------- videos ---------- */
+  const vids = [
+    { t: 'The Show Goes On', s: 301, o: 'ball beams' },
+    { t: 'Knights & Queens', s: 302, o: 'moon rink' },
+    { t: 'Stay Golden', s: 303, o: 'ball rink' }
+  ];
+  const vList = $('#vList'), vMeta = $('#vMeta'), vCount = $('#vCount'), sc = $('#stageCv'), sx = sc.getContext('2d'), stage = $('#stage');
+  let vid = 0, playT = 0;
+  vids.forEach((v, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<button><canvas width="176" height="100" aria-hidden="true"></canvas><span></span><time>Video</time></button>`;
+    $('span', li).textContent = v.t;
+    scene($('canvas', li).getContext('2d'), 176, 100, v.s, opts(v.o));
+    $('button', li).onclick = () => setVid(i); vList.append(li);
+  });
+  const vBtns = $$('button', vList);
+  const drawStage = () => scene(sx, sc.width, sc.height, vids[vid].s, { ...opts(vids[vid].o), t: playT });
+  function setVid(i, first) {
+    vid = i; const v = vids[i];
+    vBtns.forEach((b, j) => b.setAttribute('aria-current', j === i));
+    vCount.textContent = pad2(i + 1) + ' / ' + pad2(vids.length);
+    vMeta.classList.remove('swap');
+    vMeta.innerHTML = `<h3></h3><p class="mono dim">Music video · on YouTube</p>`; $('h3', vMeta).textContent = v.t;
+    drawStage();
+    if (first) return;
+    void vMeta.offsetWidth; vMeta.classList.add('swap');
+    sc.classList.remove('wipe'); void sc.offsetWidth; sc.classList.add('wipe');
+  }
+  setVid(0, true);
+
+  /* ---------- newsletter ---------- */
+  $('#form').addEventListener('submit', e => {
+    e.preventDefault(); const v = $('#email').value.trim(), m = $('#formMsg');
+    m.textContent = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'This is where “Subscribed. Thank you.” appears.' : 'Enter an email address like name@example.com.';
+  });
+
+  /* ---------- nav ---------- */
+  const nav = $('#nav'), menu = $('#menu'), menuBtn = $('#menuBtn'); let lastY = 0, menuOpen = false;
+  const setMenu = o => { menuOpen = o; menu.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); menuBtn.textContent = o ? 'Close' : 'Menu'; };
+  menuBtn.onclick = () => setMenu(!menuOpen);
+  $$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  addEventListener('scroll', () => { const y = scrollY; nav.classList.toggle('hide', y > lastY && y > 240 && !menuOpen); lastY = y; }, { passive: true });
+
+  /* ---------- reveal + visibility ---------- */
+  const rio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .12 });
+  $$('.rv').forEach(e => rio.observe(e));
+  const vio = new IntersectionObserver(es => es.forEach(e => e.target._v = e.isIntersecting), { rootMargin: '15% 0px' });
+  const pulse = $('#pulse'), lines = $$('span', pulse), about = $('#about'), countEl = $('#count'), foot = $('#foot'), frames = $$('[data-par]');
+  [hero, pulse, about, foot, stage, ...frames, ...mqs.map(m => m.el)].forEach(e => vio.observe(e));
+
+  /* ---------- one loop for everything that moves ---------- */
+  let sy = scrollY, last = performance.now(), wdH = '', wdF = '', cn = ''; const tIntro = performance.now() + 150;
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    const lag = scrollY - sy; sy += lag * .12; const vh = innerHeight;
+
+    if (hero._v) {
+      const hp = clamp(sy / (hero.offsetHeight * .85)), ip = ease(clamp((now - tIntro) / 1700));
+      const wd = (62 + 63 * ip * (1 - hp)).toFixed(1);
+      if (wd !== wdH) heroMark.style.setProperty('--wd', wdH = wd);
+      heroP = hp; riseP = ease(clamp((now - tIntro) / 2400)); heroImg.style.setProperty('--fy', (hp * 70).toFixed(1) + 'px');
+      if (now - slideT > DUR) setSlide(slide + 1);
+      drawHero(now);
+    }
+    if (foot._v) {
+      const r = footMark.getBoundingClientRect(), wd = (62 + 63 * ease(clamp((vh - r.top) / (r.height + vh * .25)))).toFixed(1);
+      if (wd !== wdF) footMark.style.setProperty('--wd', wdF = wd);
+    }
+    if (pulse._v) lines.forEach((l, i) => {
+      const r = l.getBoundingClientRect(), p = clamp(1 - (r.top + r.height / 2 - vh * .45) / (vh * .55)), e = p * p * (3 - 2 * p);
+      l.style.setProperty('--o', (.14 + .86 * e).toFixed(3)); l.style.setProperty('--x', ((1 - e) * (i % 2 ? 9 : -9)).toFixed(2) + 'vw');
+    });
+    if (about._v) {
+      const r = about.getBoundingClientRect(), c = pad2(Math.round(12 * ease(clamp((vh - r.top) / (vh * .9)))));
+      if (c !== cn) countEl.textContent = cn = c;
+    }
+    frames.forEach(f => { if (!f._v) return; const r = f.getBoundingClientRect(), rel = clamp(((r.top + r.height / 2) - vh / 2) / vh, -1, 1); f.firstElementChild.style.transform = `translate3d(0,${(-rel * r.height * .11).toFixed(1)}px,0)`; });
+    mqs.forEach(m => { if (!m.w || !m.el._v) return; m.x = (m.x + (38 + Math.abs(lag) * 1.6) * dt) % m.w; m.t.style.transform = `translate3d(${(m.dir > 0 ? -m.x : m.x - m.w).toFixed(1)}px,0,0)`; });
+    if (stage._v) { playT += dt; drawStage(); }
+    requestAnimationFrame(frame);
+  }
+
+  function layout() { sizeHero(); fit(); measureMq(); gUpdate(); if (RM) drawHero(0); }
+  setSlide(0, true); layout();
+  addEventListener('resize', layout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  addEventListener('load', layout); heroImg.addEventListener('load', layout);
+
+  if (RM) lines.forEach(l => { l.style.setProperty('--o', 1); l.style.setProperty('--x', '0'); });
+  else { hero._v = true; requestAnimationFrame(frame); }
+})();
+</script>
+</body>
+</html>
