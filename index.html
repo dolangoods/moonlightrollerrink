@@ -344,14 +344,15 @@ canvas{display:block}
   <section class="sec wrap" id="recordings">
     <div class="head">
       <h2 class="rv">Recordings</h2>
-      <p class="rv" style="--d:.1s">Eight singles and an EP since 2022. Pick a year to see what came out.</p>
+      <p class="rv" style="--d:.1s">Nine singles and an EP since 2020. Pick a year to see what came out.</p>
     </div>
     <div class="rec">
       <div class="tabs rv" role="tablist" aria-label="Releases by year">
         <button class="tab" role="tab" aria-selected="true" data-a="0"><b>2026</b><span>2 singles</span></button>
         <button class="tab" role="tab" aria-selected="false" data-a="1"><b>2024</b><span>4 singles</span></button>
         <button class="tab" role="tab" aria-selected="false" data-a="2"><b>2023</b><span>2 singles</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="3"><b>2022</b><span>All This Madness EP</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="3"><b>2022</b><span>1 EP</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-a="4"><b>2020</b><span>1 single</span></button>
       </div>
       <div class="rv" style="--d:.08s">
         <div class="cover" id="cover">
@@ -425,8 +426,8 @@ canvas{display:block}
   <section class="sec wrap" id="about">
     <div class="life">
       <div>
-        <p class="mono dim rv">Songs released since 2022</p>
-        <p class="life__y" id="count" aria-label="13">13</p>
+        <p class="mono dim rv">Songs released since 2020</p>
+        <p class="life__y" id="count" aria-label="14">14</p>
       </div>
       <div class="life__t">
         <p class="big rv">Moonlight Roller Rink is the original music project of songwriter, vocalist, guitarist, and Washington, DC native Paul B.</p>
@@ -592,14 +593,6 @@ canvas{display:block}
   }
   const opts = k => ({ moon: /moon/.test(k), ball: /ball/.test(k), rink: /rink/.test(k), beams: /beams/.test(k), bw: /bw/.test(k) });
 
-  function cover(ctx, w, h, k) {
-    ctx.fillStyle = C.ink2; ctx.fillRect(0, 0, w, h); ctx.strokeStyle = C.bone; ctx.fillStyle = C.bone;
-    if (k === 0) { ctx.lineWidth = 1.3; ctx.globalAlpha = .8; for (const cx of [.42, .58]) for (let r = 8; r < w * .44; r += 9) { ctx.beginPath(); ctx.arc(w * cx, h * .5, r, 0, 7); ctx.stroke(); } }
-    if (k === 1) { const r = rng(7), n = 64, bw = w * .8 / n; ctx.globalAlpha = .92; for (let i = 0; i < n; i++) { const env = Math.pow(Math.sin(i / n * Math.PI), 1.5), a = (.15 + r() * .85) * env * h * .36; ctx.fillRect(w * .1 + i * bw, h * .5 - a, bw * .45, a * 2); } }
-    if (k === 2) { const n = 26, g = w * .8 / n; ctx.globalAlpha = .92; for (let y = 0; y <= n; y++) for (let x = 0; x <= n; x++) { const px = w * .1 + x * g, py = h * .1 + y * g, d = Math.hypot(px - w * .5, py - h * .5) / (w * .4); ctx.beginPath(); ctx.arc(px, py, d < 1 ? g * .44 * (1 - d * .78) : g * .06, 0, 7); ctx.fill(); } }
-    if (k === 3) { const n = 5, R = w * .07; ctx.globalAlpha = .95; for (let i = 0; i < n; i++) { const x = w * (.14 + i * .18), y = h * .5; ctx.fillStyle = C.bone; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill(); ctx.fillStyle = C.ink2; ctx.beginPath(); ctx.arc(x + (i - 2) * R * .75, y, R * (i === 2 ? 0 : 1.02), 0, 7); ctx.fill(); } ctx.fillStyle = C.bone; }
-    ctx.globalAlpha = 1;
-  }
 
   (() => { const c = document.createElement('canvas'); c.width = c.height = 140; const x = c.getContext('2d'), d = x.createImageData(140, 140);
     for (let i = 0; i < d.data.length; i += 4) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.random() * 255; }
@@ -653,14 +646,19 @@ canvas{display:block}
     bobby: ['bobby-pins', 'Bobby Pins', 'a classic car dashboard and steering wheel inside an orange circle'],
     skulls: ['crystal-skulls', 'Crystal Skulls', 'rows of staring eyes in black and white', 1],
     show: ['the-show-goes-on', 'The Show Goes On', 'a red stacked shape on dark crinkled card'],
-    madness: ['all-this-madness', 'All This Madness', 'an iridescent liquid shape over a glowing sphere']
+    hold: ['hold-steady', 'Hold Steady', 'cut-out ransom-note letters on torn purple paper over black'],
+    golden: ['stay-golden', 'Stay Golden', 'three violet hands reaching up under a glowing yellow square'],
+    jodie: ['jodie-whittaker', 'Jodie Whittaker', 'an old television on legs showing flowers at sunset'],
+    madness: ['all-this-madness', 'All This Madness', 'an iridescent liquid shape over a glowing sphere'],
+    hurricane: ['hurricane-eyes', 'Hurricane Eyes', 'a woman in silhouette against a sunset sky, hair blowing in the wind']
   };
-  // each year shows its latest release's art; song rows carry their own (none = generated placeholder)
+  // each year shows its latest release's art; song rows carry their own
   const albums = [
     { y: 2026, k: 'Singles', h: 'Two new singles', art: 'tucson', items: [['Meet Me in Tucson', 'Single · May 21, 2026', 'tucson'], ['Every Breaking Color', 'Single · Mar 5, 2026', 'ebc']] },
-    { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby'], ['Hold Steady', 'Single'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show']] },
-    { y: 2023, k: 'Singles', h: 'Two singles', items: [['Stay Golden', 'Single'], ['Jodie Whittaker', 'Single']] },
-    { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness'], ['A Chapel in the City', 'EP track', 'madness'], ['Bridges', 'EP track', 'madness'], ['Sun Crashes', 'EP track', 'madness'], ['Artifacts', 'EP track', 'madness']] }
+    { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby'], ['Hold Steady', 'Single · Jun 28, 2024', 'hold'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show']] },
+    { y: 2023, k: 'Singles', h: 'Two singles', art: 'golden', items: [['Stay Golden', 'Single · May 12, 2023', 'golden'], ['Jodie Whittaker', 'Single · Mar 23, 2023', 'jodie']] },
+    { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness'], ['A Chapel in the City', 'EP track', 'madness'], ['Bridges', 'EP track', 'madness'], ['Sun Crashes', 'EP track', 'madness'], ['Artifacts', 'EP track', 'madness']] },
+    { y: 2020, k: 'Single', h: 'Hurricane Eyes', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane']] }
   ];
   const recInfo = $('#recInfo'), tabs = $$('.tab'), coverEl = $('#cover'), coverCap = $('#coverCap'); let z = 4;
   const layers = { tucson: $('[data-art="tucson"]', coverEl) };
@@ -670,20 +668,18 @@ canvas{display:block}
     d.innerHTML = `<img src="assets/${file}.webp" width="728" height="728" decoding="async" alt="">${tint ? '<span class="art__tone"></span>' : ''}<span class="art__dots"></span><span class="art__sweep"></span><span class="art__spot"></span>`;
     $('img', d).alt = title + ' artwork: ' + alt; coverEl.prepend(d); layers[key] = d;
   });
-  const ph = document.createElement('canvas'); ph.width = ph.height = 800; ph.setAttribute('aria-hidden', 'true');
-  cover(ph.getContext('2d'), 800, 800, 3); coverEl.prepend(ph); layers.ph = ph;
   let shown = 'tucson';
   function showArt(key, quick) {
-    key = key || 'ph'; if (key === shown) return; shown = key;
+    if (key === shown) return; shown = key;
     const el = layers[key]; el.style.zIndex = ++z;
     el.classList.remove('wipe', 'wipe--quick'); void el.offsetWidth; el.classList.add('wipe'); el.classList.toggle('wipe--quick', !!quick);
-    coverCap.textContent = ART[key] ? ART[key][1] + ' · artwork' : 'Placeholder artwork';
+    coverCap.textContent = ART[key][1] + ' · artwork';
   }
   function setAlbum(i, first) {
     const a = albums[i];
     tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i));
     recInfo.classList.remove('swap');
-    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener" data-art="${s[2] || ''}">${s[2] ? `<img class="row__art" src="assets/${ART[s[2]][0]}.webp" width="44" height="44" alt="">` : '<b class="row__art"></b>'}<span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
+    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener" data-art="${s[2]}"><img class="row__art" src="assets/${ART[s[2]][0]}.webp" width="44" height="44" alt=""><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
     // pointing at or tabbing to a song previews its sleeve; leaving the list returns to the year's cover
     const rows = $('.rows', recInfo);
     $$('a', rows).forEach(r => { const go = () => showArt(r.dataset.art, true); r.addEventListener('pointerenter', go); r.addEventListener('focus', go); });
@@ -794,7 +790,7 @@ canvas{display:block}
       l.style.setProperty('--o', (.14 + .86 * e).toFixed(3)); l.style.setProperty('--x', ((1 - e) * (i % 2 ? 9 : -9)).toFixed(2) + 'vw');
     });
     if (about._v) {
-      const r = about.getBoundingClientRect(), c = pad2(Math.round(13 * ease(clamp((vh - r.top) / (vh * .9)))));
+      const r = about.getBoundingClientRect(), c = pad2(Math.round(14 * ease(clamp((vh - r.top) / (vh * .9)))));
       if (c !== cn) countEl.textContent = cn = c;
     }
     frames.forEach(f => { if (!f._v) return; const r = f.getBoundingClientRect(), rel = clamp(((r.top + r.height / 2) - vh / 2) / vh, -1, 1); f.firstElementChild.style.transform = `translate3d(0,${(-rel * r.height * .11).toFixed(1)}px,0)`; });

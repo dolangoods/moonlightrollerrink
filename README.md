@@ -8,7 +8,7 @@ This is an unofficial design concept. The band's official site is [moonlightroll
 
 - `index.html`: the whole page. Markup, styles and script are in this one file.
 - `assets/hero-figure.webp`: the hero photo, cut out and re-toned from the band's own image.
-- `assets/*.webp` (all the others): release artwork for Meet Me in Tucson, Every Breaking Color, Bobby Pins, Crystal Skulls, The Show Goes On and the All This Madness EP.
+- `assets/*.webp` (all the others): artwork for every release, from Hurricane Eyes (2020) to Meet Me in Tucson (2026).
 
 ## Preview
 
@@ -18,14 +18,14 @@ Open `index.html` in a browser. There is no build step. Fonts (Space Grotesk and
 
 Real, taken from the band's site, Apple Music listing and October show poster:
 
-- Releases from 2022 to 2026, the three video titles, the bio, the streaming and social links, and the contact address.
+- Releases from 2020 to 2026, the three video titles, the bio, the streaming and social links, and the contact address.
 - The two remaining October 2026 shows.
 - The hero photo.
-- Release artwork and dates for every release except the 2023 singles and Hold Steady.
+- Release artwork and dates for every release.
 
 Placeholder:
 
-- Cover art for the 2023 singles and Hold Steady, gallery frames and the image strip are generated in the browser.
+- Gallery frames and the image strip are generated in the browser.
 - The newsletter form shows its states but sends nothing.
 - Song rows link to the Spotify artist page, and the video button links to the YouTube channel, not to individual tracks or videos.
 
