@@ -27,7 +27,7 @@ Real, taken from the band's site, Apple Music listing and October show poster:
 Placeholder or approximate:
 
 - The newsletter form shows its states but sends nothing.
-- Songs from 2022 onward link to their own Apple Music page. The six early singles (2012 to 2020) open a Spotify search for that song, because their track links are not in the `albums` array yet.
+- Every song row has two links. The Apple Music link goes to that song's own page. The Spotify link opens a Spotify search for that song until its track id is added to the `albums` array.
 - Video cards open a search for that title inside the band's YouTube channel, not the video itself. "Knights & Queens" has no sleeve, so its card shows a plain gradient.
 - Show rows open a Google Maps search for the venue name.
 - The hero backdrop (moon, light, sound waves) is drawn in code.
@@ -35,7 +35,7 @@ Placeholder or approximate:
 ## Updating content
 
 - Shows: the `<ol class="gigs">` list in the "Upcoming shows" section of `index.html`. Each row needs a `<time datetime="YYYY-MM-DD">`: the page hides a show once its date has passed, and the hero's top-left slot shows the next upcoming one (or the latest single when there are none).
-- Releases: the `albums` array in the script at the bottom of `index.html`. Each song is `[title, label, artwork key, Apple Music path]`; leave the path out and the row opens a Spotify search instead. Artwork lives in the `ART` table just above it.
+- Releases: the `albums` array in the script at the bottom of `index.html`. Each song is `[title, label, artwork key, Apple Music path, Spotify track id]`. The track id is the last part of a song's Spotify share link (`open.spotify.com/track/<id>`); leave it out and the Spotify link searches for the song instead. Artwork lives in the `ART` table just above it.
 - Videos: the `vids` array in the same script. Give a video an `art` key from the `ART` table to show that sleeve.
 - Hero lights: the `slides` array. Keep the frames inside the site palette, since the hero photo is toned to match it.
 

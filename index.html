@@ -170,7 +170,7 @@ canvas{display:block}
 .wipe{animation:wipe 1.1s var(--ease)}
 .wipe--quick{animation-duration:.6s}
 @keyframes wipe{from{clip-path:inset(100% 0 0 0);transform:scale(1.14)}to{clip-path:inset(0 0 0 0);transform:none}}
-.rec__info{display:flex;flex-direction:column;gap:18px;min-width:0}
+.rec__info{display:flex;flex-direction:column;gap:18px;min-width:0;container-type:inline-size}
 .rec__info h3{font:500 clamp(1.8rem,3.4vw,3.2rem)/1 var(--display);letter-spacing:-.03em}
 .rec__info dd{margin-top:4px}
 .rec__d{color:var(--dim);max-width:46ch}
@@ -287,17 +287,18 @@ canvas{display:block}
 
 /* release rows + live + concept tag */
 .rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.row a{position:relative;isolation:isolate;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 10px;border-bottom:1px solid var(--line);transition:color .35s,padding .5s var(--ease)}
-.row a::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
-.row a:hover,.row a:focus-visible{color:var(--ink);padding-left:20px}
-.row a:hover::before,.row a:focus-visible::before{transform:scaleY(1)}
-.row span{display:flex;flex-direction:column;gap:3px;min-width:0}
+/* each song has its own Apple Music and Spotify link; they sit under the title, or beside it when the column is wide enough */
+.row{display:grid;grid-template-columns:44px minmax(0,1fr);gap:6px 16px;align-items:start;padding:14px 10px;border-bottom:1px solid var(--line)}
+.row__t{display:flex;flex-direction:column;gap:3px;min-width:0;align-self:center}
 .row strong{font:600 clamp(1.05rem,1.5vw,1.3rem)/1.15 var(--display);letter-spacing:-.01em}
-.row em{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim);transition:color .35s}
-.row a:hover em,.row a:focus-visible em{color:var(--ink)}
-.row i{font-style:normal;white-space:nowrap}
-.row i .row__w{display:inline}
-@media (max-width:600px){.row i .row__w{display:none}}
+.row em{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim)}
+.row__l{grid-column:2;display:flex;flex-wrap:wrap;gap:8px}
+.row__l a{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border:1px solid var(--dim);white-space:nowrap;transition:color .4s var(--ease),border-color .4s var(--ease)}
+.row__l a::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:translateY(101%);transition:transform .5s var(--ease)}
+.row__l a:hover,.row__l a:focus-visible{color:var(--ink);border-color:var(--bone)}
+.row__l a:hover::before,.row__l a:focus-visible::before{transform:none}
+@media (pointer:coarse){.row__l a{min-height:44px}}
+@container (min-width:540px){.row{grid-template-columns:44px minmax(0,1fr) auto;align-items:center}.row__l{grid-column:3;flex-wrap:nowrap}}
 .row__art{width:44px;height:44px;object-fit:cover;background:var(--ink-2);border:1px solid var(--line)}
 .cover__cap{margin-top:10px}
 .live{display:flex;flex-direction:column;gap:22px;align-items:flex-start;align-self:center;min-width:0}
@@ -709,15 +710,15 @@ canvas{display:block}
     spin: ['spin', 'Spin', 'a clear bass drum with the band name painted in teal, in black and white']
   };
   // each year shows its latest release's art; song rows carry their own.
-  // a row is [title, label, artwork key, Apple Music path]; rows without a path open a Spotify search for that song
+  // a row is [title, label, artwork key, Apple Music path, Spotify track id]; without a track id the Spotify link searches for that song
   const albums = [
     { y: 2026, k: 'Singles', h: 'Two new singles', art: 'tucson', items: [['Meet Me in Tucson', 'Single · May 21, 2026', 'tucson', 'meet-me-in-tucson/6770603461?i=6770603462'], ['Every Breaking Color', 'Single · Mar 5, 2026', 'ebc', 'every-breaking-color/1883121892?i=1883121893']] },
     { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby', 'bobby-pins/1769657158?i=1769657159'], ['Hold Steady', 'Single · Jun 28, 2024', 'hold', 'hold-steady/1753614434?i=1753614438'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls', 'crystal-skulls/1753614488?i=1753614491'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show', 'the-show-goes-on/1728704394?i=1728704400']] },
     { y: 2023, k: 'Singles', h: 'Two singles', art: 'golden', items: [['Stay Golden', 'Single · May 12, 2023', 'golden', 'stay-golden/1688103354?i=1688103356'], ['Jodie Whittaker', 'Single · Mar 23, 2023', 'jodie', 'jodie-whittaker/1677664942?i=1677665061']] },
     { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness', 'all-this-madness-ep/1646857875'], ['A Chapel in the City', 'EP track', 'madness', 'a-chapel-in-the-city/1646857875?i=1646858147'], ['Bridges', 'EP track', 'madness', 'bridges/1646857875?i=1646858152'], ['Sun Crashes', 'EP track', 'madness', 'sun-crashes/1646857875?i=1646858153'], ['Artifacts', 'EP track', 'madness', 'artifacts/1646857875?i=1646858154']] },
-    { y: '2012–2020', k: 'Singles', h: 'Six early singles', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane'], ['Polaroids', 'Single · Feb 1, 2019', 'polaroids'], ['Fingers Crossed', 'Single · Mar 31, 2016', 'fingers'], ['Rooftops', 'Single · Jun 9, 2015', 'rooftops'], ['Ghost Town', 'Single · Apr 17, 2014', 'ghost'], ['Spin', 'Single · Dec 12, 2012', 'spin']] }
+    { y: '2012–2020', k: 'Singles', h: 'Six early singles', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane', 'hurricane-eyes/1495177845?i=1495177849'], ['Polaroids', 'Single · Feb 1, 2019', 'polaroids', 'polaroids/1450580835?i=1450580836'], ['Fingers Crossed', 'Single · Mar 31, 2016', 'fingers', 'fingers-crossed/1098311838?i=1098311839'], ['Rooftops', 'Single · Jun 9, 2015', 'rooftops', 'rooftops/1004104701?i=1004105991'], ['Ghost Town', 'Single · Apr 17, 2014', 'ghost', 'ghost-town/864075492?i=864075546'], ['Spin', 'Single · Dec 12, 2012', 'spin', 'spin/589244343?i=589244348']] }
   ];
-  const songLink = it => it[3] ? [AM + it[3], 'Apple Music'] : ['https://open.spotify.com/search/' + encodeURIComponent('Moonlight Roller Rink ' + it[0]), 'Spotify'];
+  const spotifyLink = it => it[4] ? 'https://open.spotify.com/track/' + it[4] : 'https://open.spotify.com/search/' + encodeURIComponent('Moonlight Roller Rink ' + it[0]) + '/tracks';
   const recInfo = $('#recInfo'), tabs = $$('.tab'), coverEl = $('#cover'), coverCap = $('#coverCap'); let z = 4;
   const layers = { tucson: $('[data-art="tucson"]', coverEl) };
   Object.entries(ART).forEach(([key, [file, title, alt, tint]]) => {
@@ -744,10 +745,10 @@ canvas{display:block}
     tabs.forEach((t, j) => { t.setAttribute('aria-selected', j === i); t.tabIndex = j === i ? 0 : -1; });
     recInfo.setAttribute('aria-labelledby', tabs[i].id);
     recInfo.classList.remove('swap');
-    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(it => { const [url, where] = songLink(it); return `<li class="row"><a href="${url}" target="_blank" rel="noopener" data-art="${it[2]}"><img class="row__art" src="assets/thumbs/${ART[it[2]][0]}.webp" width="44" height="44" loading="lazy" alt=""><span><strong>${it[0]}</strong><em>${it[1]}</em></span><i class="mono">${where.replace(' Music', '<span class="row__w"> Music</span>')} ↗</i></a></li>`; }).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">All on Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">All on Apple Music ↗</a></div>`;
+    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(it => `<li class="row" data-art="${it[2]}"><img class="row__art" src="assets/thumbs/${ART[it[2]][0]}.webp" width="44" height="44" loading="lazy" alt=""><span class="row__t"><strong>${it[0]}</strong><em>${it[1]}</em></span><span class="row__l mono"><a href="${AM + it[3]}" target="_blank" rel="noopener" aria-label="${it[0]} on Apple Music">Apple Music ↗</a><a href="${spotifyLink(it)}" target="_blank" rel="noopener" aria-label="${it[0]} on Spotify">Spotify ↗</a></span></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">All on Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">All on Apple Music ↗</a></div>`;
     // pointing at or tabbing to a song previews its sleeve; leaving the list returns to the year's cover
     const rows = $('.rows', recInfo);
-    $$('a', rows).forEach(r => { const go = () => showArt(r.dataset.art, true); r.addEventListener('pointerenter', go); r.addEventListener('focus', go); });
+    $$('.row', rows).forEach(r => { const go = () => showArt(r.dataset.art, true); r.addEventListener('pointerenter', go); r.addEventListener('focusin', go); });
     rows.addEventListener('pointerleave', () => showArt(a.art, true));
     rows.addEventListener('focusout', e => { if (!rows.contains(e.relatedTarget)) showArt(a.art, true); });
     if (first) return;
