@@ -238,9 +238,7 @@ canvas{display:block}
 
 /* newsletter */
 .news h2{font:800 clamp(1.8rem,5vw,4.6rem)/.98 var(--display);font-variation-settings:"wdth" 100;letter-spacing:-.02em;max-width:20ch;text-wrap:balance;margin-top:16px}
-.mq--strip{border:0;margin-block:clamp(36px,6vw,80px)}
-.mq--strip .mq__t{gap:clamp(8px,1vw,14px);padding-right:clamp(8px,1vw,14px)}
-.mq--strip canvas{height:clamp(150px,20vw,270px);width:auto;flex:0 0 auto}
+.news+.wrap{margin-top:clamp(28px,4vw,48px)}
 .form{display:flex;flex-wrap:wrap;gap:10px;max-width:640px}
 .form input{flex:1 1 240px;min-width:0;padding:14px 16px;background:transparent;border:1px solid var(--line);color:var(--bone);font:400 1rem/1.2 var(--body);transition:border-color .3s}
 .form input::placeholder{color:var(--dim)}
@@ -472,11 +470,6 @@ canvas{display:block}
     <div class="wrap news">
       <p class="mono dim rv">Newsletter</p>
       <h2 class="rv" style="--d:.06s">New songs, show dates and the occasional update, by email.</h2>
-    </div>
-    <div class="mq mq--strip" data-mq="-1" data-rep="3" aria-hidden="true">
-      <div class="mq__t">
-        <canvas width="300" height="375" data-s="201" data-k="ball"></canvas><canvas width="560" height="375" data-s="202" data-k="moon rink"></canvas><canvas width="300" height="375" data-s="203" data-k="beams bw"></canvas><canvas width="375" height="375" data-s="204" data-k="ball beams"></canvas><canvas width="560" height="375" data-s="205" data-k="rink beams"></canvas><canvas width="300" height="375" data-s="206" data-k="moon bw"></canvas><canvas width="560" height="375" data-s="207" data-k="ball rink"></canvas><canvas width="300" height="375" data-s="208" data-k="moon"></canvas>
-      </div>
     </div>
     <div class="wrap">
       <form class="form rv" id="form" novalidate>
