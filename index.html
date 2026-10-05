@@ -83,7 +83,7 @@ canvas{display:block}
 .hero__shade{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(transparent,var(--ink));pointer-events:none}
 .hero__row{position:relative;display:grid;grid-template-columns:minmax(0,32ch) minmax(0,1fr);gap:24px;align-items:end;padding-inline:var(--gut);margin-bottom:clamp(14px,2vw,30px)}
 .np{display:flex;align-items:flex-start;gap:12px}
-.np__dot{width:9px;height:9px;margin-top:3px;border-radius:50%;background:var(--neon);animation:dot 1.6s ease-in-out infinite alternate}
+.np__dot{width:9px;height:9px;margin-top:3px;border-radius:50%;background:var(--accent,var(--neon));transition:background .8s;animation:dot 1.6s ease-in-out infinite alternate}
 @keyframes dot{from{opacity:.35;transform:scale(.8)}to{opacity:1;transform:scale(1.15)}}
 .np__t{font:700 1.05rem/1.2 var(--display);font-variation-settings:"wdth" 110;margin-top:4px}
 .hero__intro{font-size:1.02rem;line-height:1.45;color:var(--bone)}
@@ -92,7 +92,7 @@ canvas{display:block}
 .ext:hover,.ext:focus-visible{color:var(--glow)}
 .ticks{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 12px;list-style:none;margin:0;padding:0}
 .ticks button{position:relative;padding:6px 0 8px;font:500 .72rem/1 var(--mono);letter-spacing:.1em;color:var(--dim);transition:color .3s}
-.ticks button::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--bone);transform:scaleX(0);transform-origin:left}
+.ticks button::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--accent,var(--bone));transform:scaleX(0);transform-origin:left}
 .ticks button[aria-current="true"]{color:var(--bone)}
 .ticks button[aria-current="true"]::after{animation:tick var(--dur,6s) linear forwards}
 @keyframes tick{to{transform:scaleX(1)}}
@@ -513,16 +513,18 @@ canvas{display:block}
   /* ---------- generated imagery: a rink at night ---------- */
   function scene(ctx, w, h, seed, o = {}) {
     const r = rng(seed), t = o.t || 0, M = Math.max(w, h), m = Math.min(w, h);
-    const cols = o.bw ? [C.bone, C.bone] : [C.dusk, C.neon, C.dusk, C.glow, C.neon];
-    const spark = o.bw ? [C.bone] : [C.bone, C.neon, C.glow, C.bone];
+    // a palette (hero frames) sets the colours and the moon and wave styles; everything else uses the site colours
+    const P = o.pal || { bg: C.ink, glow: o.bw ? [C.bone, C.bone] : [C.dusk, C.neon, C.dusk, C.glow, C.neon], spark: o.bw ? [C.bone] : [C.bone, C.neon, C.glow, C.bone],
+      glowA: o.bw ? .45 : 1, moon: C.bone, halo: C.bone, rail: o.bw ? C.bone : C.neon };
+    const cols = P.glow, spark = P.spark;
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = C.ink; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = P.bg; ctx.fillRect(0, 0, w, h);
     ctx.globalCompositeOperation = 'lighter';
     const n = 3 + Math.floor(r() * 3);
     for (let i = 0; i < n; i++) {
       const ph = r() * 6.28, sp = .15 + r() * .3;
       const x = (r() * 1.1 - .05 + Math.sin(t * sp + ph) * .09) * w, y = (r() * .7 + Math.cos(t * sp * .8 + ph) * .07) * h;
-      const rad = (.28 + r() * .5) * M, c = cols[Math.floor(r() * cols.length)], a = (.2 + r() * .34) * (o.bw ? .45 : 1);
+      const rad = (.28 + r() * .5) * M, c = cols[Math.floor(r() * cols.length)], a = (.2 + r() * .34) * (P.glowA || 1);
       const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
       g.addColorStop(0, rgba(c, a)); g.addColorStop(.45, rgba(c, a * .32)); g.addColorStop(1, rgba(c, 0));
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
@@ -536,37 +538,81 @@ canvas{display:block}
     let mx = w * (.18 + r() * .64), my = h * (.2 + r() * .14), R = m * (.09 + r() * .06); if (o.mr) { mx = o.mx * w; my = o.my * h; R = o.mr * h; }
     const HALO = o.mr ? 2.3 : 3.6, cr = [r(), r(), r(), r(), r(), r(), r(), r(), r()];
     if (o.moon) {
-      const g = ctx.createRadialGradient(mx, my, R * .9, mx, my, R * HALO);
-      g.addColorStop(0, rgba(C.bone, .34)); g.addColorStop(1, rgba(C.bone, 0));
+      const ms = P.moonStyle || 'full', g = ctx.createRadialGradient(mx, my, R * .9, mx, my, R * HALO);
+      g.addColorStop(0, rgba(P.halo, .34)); g.addColorStop(1, rgba(P.halo, 0));
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, R * HALO, 0, 7); ctx.fill();
       ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = C.bone; ctx.beginPath(); ctx.arc(mx, my, R, 0, 7); ctx.fill();
-      ctx.fillStyle = rgba(C.ink, .1);
-      if (!o.mr) for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(mx + (cr[i * 3] - .5) * R * 1.1, my + (cr[i * 3 + 1] - .5) * R * 1.1, R * (.1 + cr[i * 3 + 2] * .16), 0, 7); ctx.fill(); }
+      const disc = (rad, fill) => { ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.fill(); };
+      if (ms === 'full') {
+        disc(R, P.moon); ctx.fillStyle = rgba(C.ink, .1);
+        if (!o.mr) for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(mx + (cr[i * 3] - .5) * R * 1.1, my + (cr[i * 3 + 1] - .5) * R * 1.1, R * (.1 + cr[i * 3 + 2] * .16), 0, 7); ctx.fill(); }
+      } else if (ms === 'ring') {   // a neon hoop: dark face, bright rim, glow on the inside edge
+        disc(R, P.bg); ctx.globalCompositeOperation = 'lighter';
+        const ig = ctx.createRadialGradient(mx, my, R * .55, mx, my, R * .95); ig.addColorStop(0, rgba(P.halo, 0)); ig.addColorStop(1, rgba(P.halo, .45));
+        disc(R * .95, ig); ctx.strokeStyle = P.moon; ctx.lineWidth = R * .09; ctx.beginPath(); ctx.arc(mx, my, R * .93, 0, 7); ctx.stroke();
+      } else if (ms === 'crescent') {   // lit disc with the shadow side held back, a little earthshine left in it
+        disc(R, P.moon); ctx.save(); ctx.beginPath(); ctx.arc(mx, my, R + 1, 0, 7); ctx.clip();
+        ctx.fillStyle = rgba(P.bg, .78); ctx.beginPath(); ctx.arc(mx + R * .72, my - R * .3, R * .9, 0, 7); ctx.fill(); ctx.restore();
+      } else if (ms === 'sun') {   // retro striped sunset
+        const sg = ctx.createLinearGradient(0, my - R, 0, my + R); sg.addColorStop(0, P.sunTop); sg.addColorStop(.5, P.moon); sg.addColorStop(1, P.sunBot);
+        disc(R, sg); ctx.save(); ctx.beginPath(); ctx.arc(mx, my, R + 1, 0, 7); ctx.clip(); ctx.fillStyle = P.bg;
+        for (let i = 0; i < 6; i++) { const y = my + R * (.1 + i * .16 + ((t * .03) % .16)), th = R * (.018 + i * .024); ctx.fillRect(mx - R, y, R * 2, th); }
+        ctx.restore();
+      } else if (ms === 'eclipse') {   // black disc, corona, and a bright bead creeping round the rim
+        ctx.globalCompositeOperation = 'lighter';
+        const cg = ctx.createRadialGradient(mx, my, R * .92, mx, my, R * 1.55); cg.addColorStop(0, rgba(P.moon, .85)); cg.addColorStop(.25, rgba(P.halo, .35)); cg.addColorStop(1, rgba(P.halo, 0));
+        disc(R * 1.55, cg); ctx.globalCompositeOperation = 'source-over'; disc(R, P.bg);
+        const ba = -2.2 + Math.sin(t * .25) * .5, bx = mx + Math.cos(ba) * R, by = my + Math.sin(ba) * R, bg2 = ctx.createRadialGradient(bx, by, 0, bx, by, R * .22);
+        bg2.addColorStop(0, rgba('#ffffff', .95)); bg2.addColorStop(1, rgba(P.moon, 0)); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = bg2; ctx.fillRect(bx - R * .22, by - R * .22, R * .44, R * .44);
+      } else if (ms === 'halftone') {   // printed moon: dots that shrink away from the light
+        disc(R, rgba(P.moon, .06)); ctx.fillStyle = P.moon; const sp = R * .1, lx = mx - R * .35, ly = my - R * .4;
+        for (let y = my - R; y <= my + R; y += sp) for (let x = mx - R; x <= mx + R; x += sp) {
+          if (Math.hypot(x - mx, y - my) > R - sp * .3) continue;
+          const d = Math.hypot(x - lx, y - ly) / (R * 1.9), rr = sp * .5 * Math.max(.08, 1 - d);
+          ctx.beginPath(); ctx.arc(x, y, rr, 0, 7); ctx.fill();
+        }
+      }
       ctx.globalCompositeOperation = 'lighter';
     }
-    if (o.waves) {   // sound waves: wobbling rings that leave the moon and fade as they travel
-      ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round';
-      const NW = 8, span = M * .6;
-      for (let i = 0; i < NW; i++) {
-        const p = (t * .09 + i / NW) % 1, rad = R * 1.05 + p * span, a = Math.pow(1 - p, 1.7) * .62 * Math.min(1, p * 9);
-        const amp = R * (.014 + .075 * p), k = 5 + (i % 3) * 2, c = spark[i % spark.length];
-        ctx.strokeStyle = rgba(c, a); ctx.lineWidth = Math.max(1, m * .003) * (1.7 - p);
-        ctx.beginPath();
-        for (let q = 0; q <= 140; q++) {
-          const ang = q / 140 * 6.2832, rr = rad + amp * Math.sin(ang * k + t * 2.1 + i * 1.3) + amp * .5 * Math.sin(ang * (k * 2 + 1) - t * 3.2 + i);
-          const x = mx + Math.cos(ang) * rr, y = my + Math.sin(ang) * rr; q ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    if (o.waves) {   // sound waves leaving the moon; each palette has its own kind
+      ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      const ws = P.wave || 'wobble', span = M * .6, lw = Math.max(1, m * .003);
+      const ring = (rad, fn) => { ctx.beginPath(); for (let q = 0; q <= 160; q++) { const ang = q / 160 * 6.2832, rr = rad + fn(ang), x = mx + Math.cos(ang) * rr, y = my + Math.sin(ang) * rr; q ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.closePath(); ctx.stroke(); };
+      const travel = (NW, sp, fn) => { for (let i = 0; i < NW; i++) { const p = (t * sp + i / NW) % 1; fn(i, p, R * 1.05 + p * span, Math.pow(1 - p, 1.7) * Math.min(1, p * 9)); } };
+      if (ws === 'wobble') travel(8, .09, (i, p, rad, f) => {
+        const amp = R * (.014 + .075 * p), k = 5 + (i % 3) * 2;
+        ctx.strokeStyle = rgba(spark[i % spark.length], f * .62); ctx.lineWidth = lw * (1.7 - p);
+        ring(rad, ang => amp * Math.sin(ang * k + t * 2.1 + i * 1.3) + amp * .5 * Math.sin(ang * (k * 2 + 1) - t * 3.2 + i));
+      });
+      if (ws === 'clean') travel(13, .06, (i, p, rad, f) => { ctx.strokeStyle = rgba(spark[i % spark.length], f * .5); ctx.lineWidth = lw * (1.3 - p * .8); ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke(); });
+      if (ws === 'spike') travel(6, .1, (i, p, rad, f) => { const amp = R * (.02 + .03 * p); ctx.strokeStyle = rgba(spark[0], f * .55); ctx.lineWidth = lw * (1.2 - p * .6); ring(rad, ang => amp * Math.sin(ang * 36 + t * 9 * (i % 2 ? 1 : -1))); });
+      if (ws === 'dash') {
+        travel(7, .07, (i, p, rad, f) => { ctx.setLineDash([R * .22, R * .14]); ctx.lineDashOffset = t * R * .5 * (i % 2 ? 1 : -1); ctx.strokeStyle = rgba(spark[i % spark.length], f * .7); ctx.lineWidth = lw * 2.2 * (1.4 - p); ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke(); });
+        ctx.setLineDash([]);
+      }
+      if (ws === 'bars') {   // a radial equaliser round the hoop, with two faint rings still travelling out
+        for (let q = 0; q < 84; q++) {
+          const ang = q / 84 * 6.2832, e = (Math.sin(ang * 3 + t * 2.3) * .5 + .5) * (Math.sin(ang * 7 - t * 3.1) * .5 + .5) + .18 * (Math.sin(ang * 13 + t * 5.3) * .5 + .5);
+          const r0 = R * 1.14, r1 = r0 + R * (.06 + .7 * e); ctx.strokeStyle = rgba(spark[q % spark.length], .35 + .5 * e); ctx.lineWidth = R * .045;
+          ctx.beginPath(); ctx.moveTo(mx + Math.cos(ang) * r0, my + Math.sin(ang) * r0); ctx.lineTo(mx + Math.cos(ang) * r1, my + Math.sin(ang) * r1); ctx.stroke();
         }
-        ctx.closePath(); ctx.stroke();
+        travel(3, .07, (i, p, rad, f) => { ctx.strokeStyle = rgba(P.halo, f * .35); ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(mx, my, rad + R * .7, 0, 7); ctx.stroke(); });
+      }
+      if (ws === 'orbit') for (let i = 0; i < 5; i++) {   // tilted orbits, each with a spark running along it
+        const rx = R * (1.45 + i * .5), ry = rx * .3, rot = -.35 + i * .32 + Math.sin(t * .2 + i) * .08, c = spark[i % spark.length], f = 1 - i * .14;
+        ctx.strokeStyle = rgba(c, .32 * f); ctx.lineWidth = lw * 1.2; ctx.beginPath(); ctx.ellipse(mx, my, rx, ry, rot, 0, 6.2832); ctx.stroke();
+        const ph = t * (.6 - i * .07) * (i % 2 ? -1 : 1) + i * 1.9, px = Math.cos(ph) * rx, py = Math.sin(ph) * ry;
+        const sx = mx + px * Math.cos(rot) - py * Math.sin(rot), sy = my + px * Math.sin(rot) + py * Math.cos(rot), sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * .16);
+        sg.addColorStop(0, rgba(c, .95 * f)); sg.addColorStop(1, rgba(c, 0)); ctx.fillStyle = sg; ctx.fillRect(sx - R * .16, sy - R * .16, R * .32, R * .32);
       }
     }
     if (o.rink) {
       const hy = h * .68;
       ctx.globalCompositeOperation = 'source-over';
-      const fg = ctx.createLinearGradient(0, hy, 0, h); fg.addColorStop(0, rgba(C.ink, .5)); fg.addColorStop(1, rgba(C.ink, .92));
+      const fg = ctx.createLinearGradient(0, hy, 0, h); fg.addColorStop(0, rgba(P.bg, .5)); fg.addColorStop(1, rgba(P.bg, .92));
       ctx.fillStyle = fg; ctx.fillRect(0, hy, w, h - hy);
       ctx.globalCompositeOperation = 'lighter';
-      const rc = o.bw ? C.bone : C.neon, rg = ctx.createLinearGradient(0, hy - h * .03, 0, hy + h * .03);
+      const rc = P.rail, rg = ctx.createLinearGradient(0, hy - h * .03, 0, hy + h * .03);
       rg.addColorStop(0, rgba(rc, 0)); rg.addColorStop(.5, rgba(rc, .85)); rg.addColorStop(1, rgba(rc, 0));
       ctx.fillStyle = rg; ctx.fillRect(0, hy - h * .03, w, h * .06);
       ctx.save(); ctx.beginPath(); ctx.rect(0, hy, w, h - hy); ctx.clip();
@@ -604,7 +650,7 @@ canvas{display:block}
       ctx.globalCompositeOperation = 'source-over';
     }
     const v = ctx.createRadialGradient(w / 2, h / 2, m * .3, w / 2, h / 2, M * .75);
-    v.addColorStop(0, rgba(C.ink, 0)); v.addColorStop(1, rgba(C.ink, .72));
+    v.addColorStop(0, rgba(P.bg, 0)); v.addColorStop(1, rgba(P.bg, .72));
     ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
   }
   const opts = k => ({ moon: /moon/.test(k), ball: /ball/.test(k), rink: /rink/.test(k), beams: /beams/.test(k), bw: /bw/.test(k) });
@@ -635,14 +681,23 @@ canvas{display:block}
 
   /* ---------- hero ---------- */
   const hero = $('#top'), hc = $('#heroBg'), hx = hc.getContext('2d'), cut = $('#heroCut'), ticks = $('#ticks');
-  const slides = [{ s: 11, rink: 1 }, { s: 23, beams: 1 }, { s: 37, rink: 1, beams: 1 }, { s: 44 }, { s: 58, beams: 1, bw: 1 }, { s: 61, rink: 1 }];
+  // six frames, each its own light: colours, the shape of the moon, and the kind of sound wave coming off it
+  const slides = [
+    { s: 11, rink: 1, name: 'Midnight', pal: { bg: C.ink, glow: [C.dusk, C.neon, C.dusk, C.glow, C.neon], spark: [C.bone, C.neon, C.glow, C.bone], moon: C.bone, halo: C.bone, rail: C.neon, accent: C.neon, moonStyle: 'full', wave: 'wobble' } },
+    { s: 23, beams: 1, name: 'Neon', pal: { bg: '#12041a', glow: ['#ff4d8d', '#b3206f', '#7a1fd6', '#ff4d8d'], spark: ['#ffd3e4', '#ff4d8d', '#ff8cc0'], moon: '#ffd3e4', halo: '#ff4d8d', rail: '#ff4d8d', accent: '#ff4d8d', moonStyle: 'ring', wave: 'bars' } },
+    { s: 37, rink: 1, beams: 1, name: 'Ice', pal: { bg: '#03131a', glow: ['#0f8f9a', '#1d5fa8', '#6fe3d4', '#0f8f9a'], spark: ['#d9fbff', '#6fe3d4', '#8fd3ff'], moon: '#e4fbff', halo: '#6fe3d4', rail: '#6fe3d4', accent: '#6fe3d4', moonStyle: 'crescent', wave: 'clean' } },
+    { s: 44, name: 'Sunset', pal: { bg: '#170806', glow: ['#ff6a3d', '#c42a4a', '#ffae42', '#7a1f5c'], spark: ['#ffd9a0', '#ffae42', '#ff6a3d'], moon: '#ffae42', sunTop: '#ffe08a', sunBot: '#ff4d5e', halo: '#ff8a3d', rail: '#ff6a3d', accent: '#ff8a3d', moonStyle: 'sun', wave: 'dash' } },
+    { s: 58, beams: 1, bw: 1, name: 'Mono', pal: { bg: '#0a0a0b', glow: [C.bone], glowA: .4, spark: [C.bone], moon: C.bone, halo: C.bone, rail: C.bone, accent: C.bone, moonStyle: 'halftone', wave: 'spike' } },
+    { s: 61, rink: 1, name: 'Eclipse', pal: { bg: '#040d07', glow: ['#2f7a2a', '#b8ff5a', '#1f5c3a'], spark: ['#eaffc8', '#b8ff5a', '#7dffb0'], moon: '#d4ff8a', halo: '#b8ff5a', rail: '#b8ff5a', accent: '#b8ff5a', moonStyle: 'eclipse', wave: 'orbit' } }
+  ];
   const DUR = 7000; let slide = 0, slideT = performance.now();
   ticks.style.setProperty('--dur', DUR + 'ms');
-  slides.forEach((_, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.textContent = pad2(i + 1); b.setAttribute('aria-label', 'Frame ' + (i + 1)); b.onclick = () => setSlide(i); li.append(b); ticks.append(li); });
+  slides.forEach((_, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.textContent = pad2(i + 1); b.setAttribute('aria-label', 'Frame ' + (i + 1) + ': ' + slides[i].name); b.onclick = () => setSlide(i); li.append(b); ticks.append(li); });
   const tickBtns = $$('button', ticks);
   function setSlide(i, quiet) {
     slide = (i + slides.length) % slides.length; slideT = performance.now();
     tickBtns.forEach((b, j) => b.setAttribute('aria-current', j === slide));
+    hero.style.setProperty('--accent', slides[slide].pal.accent);
     if (!quiet && !RM) { cut.classList.remove('go'); void cut.offsetWidth; cut.classList.add('go'); }
     if (RM) drawHero(0);
   }
