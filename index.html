@@ -205,7 +205,7 @@ canvas{display:block}
 .rail::-webkit-scrollbar{display:none}
 .rail.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
 .rail figure{flex:0 0 auto;scroll-snap-align:start}
-.rail canvas{height:clamp(260px,46vw,580px);width:auto;max-width:calc(100vw - 2*var(--gut));object-fit:cover}
+.rail img{display:block;height:clamp(260px,46vw,580px);width:auto;max-width:calc(100vw - 2*var(--gut));object-fit:cover;-webkit-user-drag:none;user-select:none}
 .rail figcaption{margin-top:10px}
 .ctl{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:clamp(20px,3vw,36px)}
 .ctl__n{font:800 clamp(1.4rem,2.4vw,2rem)/1 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums}
@@ -405,18 +405,17 @@ canvas{display:block}
   <section class="sec" id="gallery">
     <div class="head wrap">
       <h2 class="rv">Gallery</h2>
-      <p class="rv" style="--d:.1s">Generated stand-ins for now. Band photography goes here. Drag the strip, or step through it.</p>
+      <p class="rv" style="--d:.1s">From the studio and the living room. Drag the strip, or step through it.</p>
     </div>
     <div class="rail" id="rail" tabindex="0" aria-label="Gallery, scroll sideways">
-      <figure><canvas width="720" height="900" data-s="3" data-k="moon rink" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 01</figcaption></figure>
-      <figure><canvas width="1200" height="800" data-s="18" data-k="ball beams rink" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 02</figcaption></figure>
-      <figure><canvas width="720" height="900" data-s="27" data-k="ball bw" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 03</figcaption></figure>
-      <figure><canvas width="1200" height="800" data-s="52" data-k="moon rink beams" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 04</figcaption></figure>
-      <figure><canvas width="900" height="900" data-s="66" data-k="ball" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 05</figcaption></figure>
-      <figure><canvas width="1200" height="800" data-s="85" data-k="rink beams" aria-hidden="true"></canvas><figcaption class="mono dim">Placeholder 06</figcaption></figure>
+      <figure><img src="assets/gallery/booth.webp" width="937" height="681" loading="lazy" decoding="async" alt="Paul in a vocal booth with an acoustic guitar and headphones, flashing a peace sign"><figcaption class="mono dim">In the booth · August 2026</figcaption></figure>
+      <figure><img src="assets/gallery/radio-flyer.webp" width="937" height="681" loading="lazy" decoding="async" alt="Two musicians talking in a studio lit with blue lights"><figcaption class="mono dim">With Radio Flyer Records · August 2026</figcaption></figure>
+      <figure><img src="assets/gallery/console.webp" width="1192" height="1072" loading="lazy" decoding="async" alt="Two people at a large mixing console in a recording studio"><figcaption class="mono dim">At the console · Summer 2026</figcaption></figure>
+      <figure><img src="assets/gallery/home-electric.webp" width="1206" height="678" loading="lazy" decoding="async" alt="Black and white shot of Paul playing electric guitar at home, a Skeletor figure in the foreground"><figcaption class="mono dim">Home recording · May 2026</figcaption></figure>
+      <figure><img src="assets/gallery/home-acoustic.webp" width="937" height="680" loading="lazy" decoding="async" alt="Paul playing a sticker-covered acoustic guitar by a sunny window"><figcaption class="mono dim">Acoustic, at home · May 2026</figcaption></figure>
     </div>
     <div class="ctl wrap">
-      <p class="ctl__n" id="gCount" aria-live="polite">01 / 06</p>
+      <p class="ctl__n" id="gCount" aria-live="polite">01 / 05</p>
       <div class="ctl__b"><button class="btn" id="gPrev">Prev</button><button class="btn" id="gNext">Next</button></div>
     </div>
   </section>
@@ -490,7 +489,7 @@ canvas{display:block}
   </div>
   <p class="wordmark" id="footMark"><span>Moonlight</span><span>Roller Rink</span></p>
   <div class="wrap foot__end">
-    <span>Unofficial design concept. The band’s official site is moonlightrollerrink.com. The hero photo is the band’s own, re-toned for this concept; all other artwork is a generated placeholder.</span>
+    <span>Unofficial design concept. The band’s official site is moonlightrollerrink.com. Photos and release artwork are the band’s own (the hero photo re-toned for this concept); the remaining imagery is a generated placeholder.</span>
     <a href="#top">Back to top ↑</a>
   </div>
 </footer>

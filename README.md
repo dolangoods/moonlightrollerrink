@@ -22,10 +22,11 @@ Real, taken from the band's site, Apple Music listing and October show poster:
 - The two remaining October 2026 shows.
 - The hero photo.
 - Release artwork and dates for every release.
+- Gallery photos in `assets/gallery/`, taken from the band's Instagram posts.
 
 Placeholder:
 
-- Gallery frames and the image strip are generated in the browser.
+- The image strip above the newsletter is generated in the browser.
 - The newsletter form shows its states but sends nothing.
 - Song rows link to the Spotify artist page, and the video button links to the YouTube channel, not to individual tracks or videos.
 
