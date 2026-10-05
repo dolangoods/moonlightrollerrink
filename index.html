@@ -563,14 +563,11 @@ canvas{display:block}
         travel(7, .07, (i, p, rad, f) => { ctx.setLineDash([R * .22, R * .14]); ctx.lineDashOffset = t * R * .5 * (i % 2 ? 1 : -1); ctx.strokeStyle = rgba(spark[i % spark.length], f * .7); ctx.lineWidth = lw * 2.2 * (1.4 - p); ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke(); });
         ctx.setLineDash([]);
       }
-      if (ws === 'bars') {   // a radial equaliser round the hoop, with two faint rings still travelling out
-        for (let q = 0; q < 84; q++) {
-          const ang = q / 84 * 6.2832, e = (Math.sin(ang * 3 + t * 2.3) * .5 + .5) * (Math.sin(ang * 7 - t * 3.1) * .5 + .5) + .18 * (Math.sin(ang * 13 + t * 5.3) * .5 + .5);
-          const r0 = R * 1.14, r1 = r0 + R * (.06 + .7 * e); ctx.strokeStyle = rgba(spark[q % spark.length], .35 + .5 * e); ctx.lineWidth = R * .045;
-          ctx.beginPath(); ctx.moveTo(mx + Math.cos(ang) * r0, my + Math.sin(ang) * r0); ctx.lineTo(mx + Math.cos(ang) * r1, my + Math.sin(ang) * r1); ctx.stroke();
-        }
-        travel(3, .07, (i, p, rad, f) => { ctx.strokeStyle = rgba(P.halo, f * .35); ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(mx, my, rad + R * .7, 0, 7); ctx.stroke(); });
-      }
+      if (ws === 'glow') travel(4, .045, (i, p, rad, f) => {   // a few soft neon rings drifting out slowly: a wide haze with a thin bright core
+        const c = spark[i % spark.length];
+        ctx.strokeStyle = rgba(c, f * .14); ctx.lineWidth = lw * 9; ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke();
+        ctx.strokeStyle = rgba(c, f * .55); ctx.lineWidth = lw * 1.4; ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke();
+      });
       if (ws === 'orbit') for (let i = 0; i < 5; i++) {   // tilted orbits, each with a spark running along it
         const rx = R * (1.45 + i * .5), ry = rx * .3, rot = -.35 + i * .32 + Math.sin(t * .2 + i) * .08, c = spark[i % spark.length], f = 1 - i * .14;
         ctx.strokeStyle = rgba(c, .32 * f); ctx.lineWidth = lw * 1.2; ctx.beginPath(); ctx.ellipse(mx, my, rx, ry, rot, 0, 6.2832); ctx.stroke();
@@ -657,7 +654,7 @@ canvas{display:block}
   // six frames, each its own light: colours and the kind of sound wave coming off the moon
   const slides = [
     { s: 11, rink: 1, name: 'Midnight', pal: { bg: C.ink, glow: [C.dusk, C.neon, C.dusk, C.glow, C.neon], spark: [C.bone, C.neon, C.glow, C.bone], moon: C.bone, halo: C.bone, rail: C.neon, accent: C.neon, wave: 'wobble' } },
-    { s: 23, beams: 1, name: 'Neon', pal: { bg: '#12041a', glow: ['#ff4d8d', '#b3206f', '#7a1fd6', '#ff4d8d'], spark: ['#ffd3e4', '#ff4d8d', '#ff8cc0'], moon: '#ffd3e4', halo: '#ff4d8d', rail: '#ff4d8d', accent: '#ff4d8d', wave: 'bars' } },
+    { s: 23, beams: 1, name: 'Neon', pal: { bg: '#12041a', glow: ['#ff4d8d', '#b3206f', '#7a1fd6', '#ff4d8d'], spark: ['#ffd3e4', '#ff4d8d', '#ff8cc0'], moon: '#ffd3e4', halo: '#ff4d8d', rail: '#ff4d8d', accent: '#ff4d8d', wave: 'glow' } },
     { s: 37, rink: 1, beams: 1, name: 'Ice', pal: { bg: '#03131a', glow: ['#0f8f9a', '#1d5fa8', '#6fe3d4', '#0f8f9a'], spark: ['#d9fbff', '#6fe3d4', '#8fd3ff'], moon: '#e4fbff', halo: '#6fe3d4', rail: '#6fe3d4', accent: '#6fe3d4', wave: 'clean' } },
     { s: 44, name: 'Sunset', pal: { bg: '#170806', glow: ['#ff6a3d', '#c42a4a', '#ffae42', '#7a1f5c'], spark: ['#ffd9a0', '#ffae42', '#ff6a3d'], moon: '#ffae42', halo: '#ff8a3d', rail: '#ff6a3d', accent: '#ff8a3d', wave: 'dash' } },
     { s: 58, beams: 1, bw: 1, name: 'Mono', pal: { bg: '#0a0a0b', glow: [C.bone], glowA: .4, spark: [C.bone], moon: C.bone, halo: C.bone, rail: C.bone, accent: C.bone, wave: 'spike' } },
