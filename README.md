@@ -2,7 +2,7 @@
 
 A one-page site concept for Moonlight Roller Rink, the original music project of Washington, DC songwriter Paul B.
 
-This is an unofficial design concept. The band's official site is [moonlightrollerrink.com](https://moonlightrollerrink.com/), and the page says so in a fixed label and in the footer.
+This is an unofficial design concept. The band's official site is [moonlightrollerrink.com](https://moonlightrollerrink.com/), and the page says so in a fixed strip along the bottom edge and in the footer.
 
 ## Files
 
@@ -24,13 +24,26 @@ Real, taken from the band's site, Apple Music listing and October show poster:
 - Release artwork and dates for every release.
 - Gallery photos in `assets/gallery/`, taken from the band's Instagram posts.
 
-Placeholder:
+Placeholder or approximate:
 
 - The newsletter form shows its states but sends nothing.
-- Song rows link to the Spotify artist page, and the video button links to the YouTube channel, not to individual tracks or videos.
+- Songs from 2022 onward link to their own Apple Music page. The six early singles (2012 to 2020) open a Spotify search for that song, because their track links are not in the `albums` array yet.
+- Video cards open a search for that title inside the band's YouTube channel, not the video itself. "Knights & Queens" has no sleeve, so its card shows a plain gradient.
+- Show rows open a Google Maps search for the venue name.
+- The hero backdrop (moon, light, sound waves) is drawn in code.
 
 ## Updating content
 
-- Shows: the `<ol class="gigs">` list in the "Upcoming shows" section of `index.html`.
-- Releases: the `albums` array in the script at the bottom of `index.html`. Artwork lives in the `ART` table just above it; give a song a key from that table to show its sleeve.
-- Videos: the `vids` array in the same script.
+- Shows: the `<ol class="gigs">` list in the "Upcoming shows" section of `index.html`. Each row needs a `<time datetime="YYYY-MM-DD">`: the page hides a show once its date has passed, and the hero's top-left slot shows the next upcoming one (or the latest single when there are none).
+- Releases: the `albums` array in the script at the bottom of `index.html`. Each song is `[title, label, artwork key, Apple Music path]`; leave the path out and the row opens a Spotify search instead. Artwork lives in the `ART` table just above it.
+- Videos: the `vids` array in the same script. Give a video an `art` key from the `ART` table to show that sleeve.
+- Hero lights: the `slides` array. Keep the frames inside the site palette, since the hero photo is toned to match it.
+
+## Type
+
+Space Grotesk has a single axis, weight 300 to 700, and no width axis. The hierarchy uses three weights on purpose: 700 caps for display, 500 or 600 in sentence case for sub-heads and titles, 300 for numerals. DM Mono carries the labels.
+
+## Motion and accessibility
+
+- "Pause motion" in the hero stops everything that moves by itself. With the system's reduced-motion setting on, nothing animates and the button is hidden.
+- The year list in Music is a tab list (arrow keys move between years). The mobile menu takes focus, locks the page behind it, and closes with Escape.

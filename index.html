@@ -4,12 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Moonlight Roller Rink Concept</title>
+<meta name="description" content="Moonlight Roller Rink is the original music project of Washington, DC songwriter Paul B: music, upcoming shows, photos and videos. An unofficial design concept.">
+<meta name="theme-color" content="#07081a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Moonlight Roller Rink">
+<meta property="og:description" content="The original music project of Washington, DC songwriter Paul B. Music, upcoming shows, photos and videos.">
+<meta property="og:image" content="https://dolangoods.github.io/moonlightrollerrink/assets/meet-me-in-tucson.webp">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2307081a'/%3E%3Ccircle cx='16' cy='16' r='10' fill='%23f1eedf'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/hero-figure.webp">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=DM+Mono:wght@400;500&display=swap">
 <style>
 body{margin:0}img{max-width:100%}[hidden]{display:none!important}
 
-/* Layout: full-bleed stacked chapters. Display caps run edge to edge and change width as they move;
-   mono labels carry the small print; imagery is a generated rink at night: moon, mirror ball, neon rail. */
+/* Layout: full-bleed stacked chapters. Display caps run edge to edge; mono labels carry the small print.
+   Type: Space Grotesk has one axis, weight 300 to 700, so the hierarchy uses three weights on purpose:
+   700 caps for display, 500/600 sentence case for sub-heads and titles, 300 for numerals. DM Mono for labels. */
 :root{
   --ink:#07081a; --ink-2:#12142e; --bone:#f1eedf; --dim:#9296b4; --line:#272b4c;
   --neon:#ff4d8d; --glow:#6fe3d4; --dusk:#5146e0;
@@ -22,7 +34,7 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--ink);color:var(--bone);font:400 16px/1.5 var(--body);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
+body{background:var(--ink);color:var(--bone);font:400 16px/1.5 var(--body);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased;padding-bottom:28px}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 h1,h2,h3,p,figure,dl,dd{margin:0}
@@ -47,12 +59,13 @@ canvas{display:block}
   background:linear-gradient(to bottom,color-mix(in srgb,var(--ink) 88%,transparent),transparent);
   transition:transform .6s var(--ease)}
 .nav.hide{transform:translateY(-110%)}
-.nav__logo{font:900 1.15rem/1 var(--display);font-variation-settings:"wdth" 125;letter-spacing:.01em}
+.nav__logo{font:700 1rem/1 var(--display);letter-spacing:-.01em;padding-block:14px}
 .nav ul{display:flex;gap:clamp(14px,2.2vw,34px);list-style:none;margin:0;padding:0}
-.lk{display:inline-block;overflow:hidden;height:1.4em;line-height:1.4;font:500 .72rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase}
-.lk span{display:block;position:relative;transition:transform .5s var(--ease)}
-.lk span::after{content:attr(data-t);position:absolute;left:0;top:100%;color:var(--glow)}
-.lk:hover span,.lk:focus-visible span{transform:translateY(-100%)}
+.lk{display:inline-block;padding-block:13px;font:500 .72rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.lk__c{display:block;overflow:hidden;height:1.4em}
+.lk__c span{display:block;position:relative;transition:transform .5s var(--ease)}
+.lk__c span::after{content:attr(data-t);position:absolute;left:0;top:100%;color:var(--glow)}
+.lk:hover .lk__c span,.lk:focus-visible .lk__c span{transform:translateY(-100%)}
 .menu-btn{display:none;position:relative;width:44px;height:44px;margin:-10px -10px -10px 0}
 .menu-btn span{position:absolute;left:10px;right:10px;top:50%;height:2px;margin-top:-1px;background:currentColor;transition:transform .5s var(--ease),opacity .3s}
 .menu-btn span:nth-child(1){transform:translateY(-7px)}
@@ -63,7 +76,7 @@ canvas{display:block}
 .menu{position:fixed;inset:0;z-index:49;background:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:4px;padding:var(--gut);
   clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
 .menu.open{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease),visibility 0s}
-.menu a{font:900 clamp(2.4rem,13vw,5rem)/1 var(--display);font-variation-settings:"wdth" 62;text-transform:uppercase;
+.menu a{font:700 clamp(2.4rem,13vw,5rem)/1 var(--display);letter-spacing:-.03em;text-transform:uppercase;
   transform:translateY(40px);opacity:0;transition:transform .7s var(--ease),opacity .5s;transition-delay:calc(var(--i)*60ms + 150ms)}
 .menu.open a{transform:none;opacity:1}
 @media (max-width:820px){.nav ul{display:none}.menu-btn{display:block}}
@@ -75,46 +88,55 @@ canvas{display:block}
   transform:translate3d(-50%,var(--fy,0px),0);will-change:transform;
   -webkit-mask-image:linear-gradient(#000 40%,transparent 88%);mask-image:linear-gradient(#000 40%,transparent 88%)}
 .hero__lead{display:flex;flex-direction:column;gap:14px}
-.hero__row{text-shadow:0 0 16px var(--ink),0 0 4px var(--ink)}
 @media (max-width:820px){.hero__fig{-webkit-mask-image:linear-gradient(#000 32%,transparent 76%);mask-image:linear-gradient(#000 32%,transparent 76%)}}
 .hero__cut{position:absolute;inset:0;background:var(--ink);opacity:0;pointer-events:none}
 .hero__cut.go{animation:cut 1.2s var(--ease)}
 @keyframes cut{from{opacity:.96}to{opacity:0}}
-.hero__shade{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(transparent,var(--ink));pointer-events:none}
-.hero__row{position:relative;display:grid;grid-template-columns:minmax(0,32ch) minmax(0,1fr);gap:24px;align-items:end;padding-inline:var(--gut);margin-bottom:clamp(14px,2vw,30px)}
-.np{display:flex;align-items:flex-start;gap:12px}
+.hero__shade{position:absolute;left:0;right:0;bottom:0;height:82%;background:linear-gradient(transparent,color-mix(in srgb,var(--ink) 78%,transparent) 44%,var(--ink) 90%);pointer-events:none}
+.hero__row{position:relative;display:grid;grid-template-columns:minmax(0,34ch) minmax(0,1fr);gap:24px;align-items:end;padding-inline:var(--gut);margin-bottom:clamp(16px,2.2vw,34px);text-shadow:0 0 16px var(--ink),0 0 4px var(--ink)}
+.hero__row .btn{text-shadow:none}
+.np{display:flex;align-items:flex-start;gap:12px;width:fit-content;min-height:44px}
+.np__k{display:block}
+.np:hover .np__t,.np:focus-visible .np__t{color:var(--glow)}
 .np__dot{width:9px;height:9px;margin-top:3px;border-radius:50%;background:var(--accent,var(--neon));transition:background .8s;animation:dot 1.6s ease-in-out infinite alternate}
 @keyframes dot{from{opacity:.35;transform:scale(.8)}to{opacity:1;transform:scale(1.15)}}
-.np__t{font:700 1.05rem/1.2 var(--display);font-variation-settings:"wdth" 110;margin-top:4px}
+.np__t{display:block;font:600 1.15rem/1.2 var(--display);margin-top:4px;transition:color .3s}
 .hero__intro{font-size:1.02rem;line-height:1.45;color:var(--bone)}
-.hero__ctl{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
-.ext{border-bottom:1px solid currentColor;padding-bottom:3px;transition:color .3s}
-.ext:hover,.ext:focus-visible{color:var(--glow)}
-.ticks{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 12px;list-style:none;margin:0;padding:0}
-.ticks button{position:relative;padding:6px 0 8px;font:500 .72rem/1 var(--mono);letter-spacing:.1em;color:var(--dim);transition:color .3s}
-.ticks button::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--accent,var(--bone));transform:scaleX(0);transform-origin:left}
+.hero__ctl{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+/* stage lights: three frames in the site palette, plus one control that stops everything that moves on its own */
+.lights{display:flex;align-items:center;gap:4px}
+.lights__k{color:var(--dim);margin-right:4px}
+.ticks{display:flex;list-style:none;margin:0;padding:0}
+.ticks button{position:relative;min-width:44px;min-height:44px;font:500 .72rem/1 var(--mono);letter-spacing:.1em;color:var(--dim);transition:color .3s}
+.ticks button::after{content:"";position:absolute;left:12px;right:12px;bottom:9px;height:2px;background:var(--accent,var(--bone));transform:scaleX(0);transform-origin:left}
+.motion{min-height:44px;margin-left:6px;padding-left:14px;border-left:1px solid var(--dim);transition:color .3s}
+.motion:hover,.motion:focus-visible{color:var(--glow)}
+.still .grain,.still .np__dot,.still .art img,.still .fx>*,.still .ticks button::after{animation-play-state:paused}
 .ticks button[aria-current="true"]{color:var(--bone)}
 .ticks button[aria-current="true"]::after{animation:tick var(--dur,6s) linear forwards}
 @keyframes tick{to{transform:scaleX(1)}}
 .wordmark{position:relative;padding-inline:var(--gut);padding-bottom:clamp(10px,1.6vw,26px);line-height:.84;overflow:hidden}
-.wordmark span{display:block;width:max-content;white-space:nowrap;font:900 9vw/.84 var(--display);text-transform:uppercase;letter-spacing:calc(-.035em + (var(--wd,125) - 125) * .0019em)}
+.wordmark span{display:block;width:max-content;white-space:nowrap;font:700 9vw/.84 var(--display);text-transform:uppercase;letter-spacing:calc(-.035em + (var(--wd,125) - 125) * .0019em);transition:none!important}
+/* wide screens: the hero name runs on one line under the figure instead of covering it */
+@media (min-width:900px){.hero .wordmark{white-space:nowrap}.hero .wordmark span{display:inline-block}.hero .wordmark span+span{margin-left:.26em}}
 @media (max-width:820px){
   .hero__row{grid-template-columns:minmax(0,1fr);gap:18px}
-  .hero__ctl{align-items:flex-start}.ticks{justify-content:flex-start}
+  .hero__ctl{align-items:flex-start}
 }
 
 /* statement */
-.pulse{padding-block:clamp(80px,13vw,190px);overflow:hidden;overflow:clip}
-.pulse span{display:block;font:700 clamp(2.5rem,12.6vw,11.5rem)/.9 var(--display);letter-spacing:-.04em;text-transform:uppercase;
+.pulse{padding-block:clamp(64px,9vw,130px);overflow:hidden;overflow:clip}
+.pulse span{display:block;white-space:nowrap;font:700 clamp(2rem,9.4vw,9.4rem)/.94 var(--display);letter-spacing:-.04em;text-transform:uppercase;
   opacity:var(--o,1);transform:translate3d(var(--x,0),0,0);will-change:transform,opacity}
 .pulse span:nth-child(even){text-align:right}
 .pulse .hollow{color:transparent;-webkit-text-stroke:1.5px var(--bone)}
+.pulse+.sec{padding-top:clamp(8px,2vw,32px)}
 
 /* marquee */
 .mq{overflow:hidden;border-block:1px solid var(--line)}
 .mq__t{display:flex;width:max-content;will-change:transform}
 .mq--names .mq__t span{display:flex;align-items:center;gap:clamp(28px,4vw,64px);padding:22px clamp(14px,2vw,32px);white-space:nowrap;
-  font:700 clamp(1rem,1.9vw,1.5rem)/1 var(--display);font-variation-settings:"wdth" 118;text-transform:uppercase}
+  font:500 clamp(1rem,1.9vw,1.5rem)/1 var(--display);letter-spacing:.02em;text-transform:uppercase}
 .mq--names .mq__t span::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--neon)}
 
 /* chapter heads */
@@ -124,13 +146,15 @@ canvas{display:block}
 
 /* buttons */
 .btns{display:flex;flex-wrap:wrap;gap:10px}
-.btn{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:14px 20px;border:1px solid var(--bone);
+.btn{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:14px 20px;border:1px solid var(--bone);
   font:500 .72rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;transition:color .4s var(--ease)}
 .btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:translateY(101%);transition:transform .5s var(--ease)}
 .btn:hover,.btn:focus-visible{color:var(--ink)}
 .btn:hover::before,.btn:focus-visible::before{transform:none}
 .btn--solid{background:var(--bone);color:var(--ink)}
 .btn--solid::before{background:var(--glow)}
+.btn:disabled{opacity:.35;cursor:default;color:var(--bone)}
+.btn:disabled::before{transform:translateY(101%)}
 
 /* recordings */
 .rec{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,5fr) minmax(0,4fr);gap:clamp(20px,3.4vw,56px);align-items:start}
@@ -139,7 +163,7 @@ canvas{display:block}
 .tab::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--bone);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
 .tab[aria-selected="true"]{color:var(--bone)}
 .tab[aria-selected="true"]::before{transform:scaleX(1)}
-.tab b{font:800 clamp(1.5rem,2.6vw,2.4rem)/1 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums}
+.tab b{font:300 clamp(1.6rem,2.8vw,2.6rem)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .tab span{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
 .cover{position:relative;aspect-ratio:1;max-width:100%;overflow:hidden;background:var(--ink-2)}
 .cover>*{position:absolute;inset:0;width:100%;height:100%}
@@ -147,7 +171,7 @@ canvas{display:block}
 .wipe--quick{animation-duration:.6s}
 @keyframes wipe{from{clip-path:inset(100% 0 0 0);transform:scale(1.14)}to{clip-path:inset(0 0 0 0);transform:none}}
 .rec__info{display:flex;flex-direction:column;gap:18px;min-width:0}
-.rec__info h3{font:800 clamp(1.8rem,3.4vw,3.2rem)/.92 var(--display);font-variation-settings:"wdth" 118;text-transform:uppercase;letter-spacing:-.01em}
+.rec__info h3{font:500 clamp(1.8rem,3.4vw,3.2rem)/1 var(--display);letter-spacing:-.03em}
 .rec__info dd{margin-top:4px}
 .rec__d{color:var(--dim);max-width:46ch}
 .swap>*{animation:rise .9s var(--ease) both}
@@ -186,18 +210,18 @@ canvas{display:block}
 @media (max-width:900px){
   .rec{grid-template-columns:minmax(0,1fr)}
   .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.tab{flex-direction:column;gap:6px}
-  .tab b{font-size:clamp(1rem,4.6vw,1.5rem);white-space:nowrap}
+  .tab b{font-size:clamp(1.05rem,4.8vw,1.6rem);white-space:nowrap}
 }
 
 /* tour */
 .tour{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,4vw,64px);align-items:start}
 .frame{position:relative;overflow:hidden;background:var(--ink-2)}
-.frame canvas{position:absolute;left:0;top:-12%;width:100%;height:124%;object-fit:cover;will-change:transform}
+.frame img{position:absolute;left:0;top:-12%;width:100%;height:124%;max-width:none;object-fit:cover;object-position:42% 50%;filter:saturate(.8) contrast(1.06) brightness(.86);will-change:transform}
 .tour .frame{aspect-ratio:4/5;position:sticky;top:90px}
 
 @media (max-width:900px){
   .tour{grid-template-columns:minmax(0,1fr)}
-  .tour .frame{position:relative;top:0;aspect-ratio:16/10}
+  .tour .frame{position:relative;top:0;aspect-ratio:16/10;order:2}
 }
 
 /* gallery */
@@ -208,59 +232,57 @@ canvas{display:block}
 .rail img{display:block;height:clamp(260px,46vw,580px);width:auto;max-width:calc(100vw - 2*var(--gut));object-fit:cover;-webkit-user-drag:none;user-select:none}
 .rail figcaption{margin-top:10px}
 .ctl{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:clamp(20px,3vw,36px)}
-.ctl__n{font:800 clamp(1.4rem,2.4vw,2rem)/1 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums}
+.ctl__n{font:300 clamp(1.4rem,2.4vw,2rem)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .ctl__b{display:flex;gap:10px}
 
-/* film */
-.vid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,3vw,48px);align-items:start}
-.stage{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--ink-2)}
-.stage canvas{position:absolute;inset:0;width:100%;height:100%}
-.stage__play{position:absolute;left:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,24px)}
-.stage__n{position:absolute;right:clamp(12px,2vw,24px);top:clamp(12px,2vw,24px)}
-.vid__meta{display:flex;flex-direction:column;gap:10px;margin-top:18px}
-.vid__meta h3{font:700 clamp(1.2rem,2.2vw,1.9rem)/1.1 var(--display);font-variation-settings:"wdth" 110}
-.vlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.vlist button{display:grid;grid-template-columns:88px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;padding:10px 0;border-bottom:1px solid var(--line);color:var(--dim);transition:color .3s,padding .5s var(--ease)}
-.vlist button:hover,.vlist button[aria-current="true"]{color:var(--bone)}
-.vlist button[aria-current="true"]{padding-left:10px;box-shadow:inset 3px 0 0 var(--neon)}
-.vlist canvas{width:88px;height:50px}
-.vlist span{min-width:0;font-weight:600;line-height:1.25}
-.vlist time{font:500 .72rem/1 var(--mono);letter-spacing:.1em;font-variant-numeric:tabular-nums}
-@media (max-width:900px){.vid{grid-template-columns:minmax(0,1fr)}}
+/* videos: three cards that go straight to YouTube, each wearing its single's sleeve */
+.vcards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.4vw,36px)}
+.vcard{display:flex;flex-direction:column;gap:8px}
+.vcard__img{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;margin-bottom:8px;background:linear-gradient(150deg,var(--dusk),var(--ink-2) 58%,color-mix(in srgb,var(--neon) 55%,var(--ink-2)))}
+.vcard__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.82) contrast(1.08);transition:transform .9s var(--ease),filter .6s var(--ease)}
+.vcard:hover img,.vcard:focus-visible img{transform:scale(1.05);filter:brightness(1) contrast(1.05)}
+.vcard__play{position:absolute;left:14px;bottom:14px;width:44px;height:44px;border-radius:50%;background:var(--bone);transition:background .3s}
+.vcard__play::after{content:"";position:absolute;left:17px;top:14px;border-left:13px solid var(--ink);border-block:8px solid transparent}
+.vcard:hover .vcard__play,.vcard:focus-visible .vcard__play{background:var(--glow)}
+.vcard strong{font:500 clamp(1.25rem,2vw,1.75rem)/1.1 var(--display);letter-spacing:-.02em}
+.vcard em{font-style:normal;color:var(--dim);transition:color .3s}
+.vcard:hover em,.vcard:focus-visible em{color:var(--glow)}
+@media (max-width:900px){.vcards{grid-template-columns:minmax(0,1fr);gap:32px}}
 
 /* journey */
 .life{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,64px);align-items:end}
-.life__y{white-space:nowrap;font:900 clamp(5.5rem,21vw,20rem)/.76 var(--display);font-variation-settings:"wdth" 62;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.life__y{white-space:nowrap;font:300 clamp(5.5rem,21vw,20rem)/.76 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.06em;margin-left:-.04em}
 .life__t{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
 .life__t p.big{font-size:clamp(1.1rem,1.7vw,1.45rem);line-height:1.4;max-width:44ch}
 @media (max-width:900px){.life{grid-template-columns:minmax(0,1fr)}}
 
 /* newsletter */
-.news h2{font:800 clamp(1.8rem,5vw,4.6rem)/.98 var(--display);font-variation-settings:"wdth" 100;letter-spacing:-.02em;max-width:20ch;text-wrap:balance;margin-top:16px}
+.news h2{font:500 clamp(1.8rem,5vw,4.6rem)/1.02 var(--display);letter-spacing:-.035em;max-width:20ch;text-wrap:balance;margin-top:16px}
 .news+.wrap{margin-top:clamp(28px,4vw,48px)}
 .form{display:flex;flex-wrap:wrap;gap:10px;max-width:640px}
-.form input{flex:1 1 240px;min-width:0;padding:14px 16px;background:transparent;border:1px solid var(--line);color:var(--bone);font:400 1rem/1.2 var(--body);transition:border-color .3s}
+.form input{flex:1 1 240px;min-width:0;padding:14px 16px;background:transparent;border:1px solid var(--dim);color:var(--bone);font:400 1rem/1.2 var(--body);transition:border-color .3s}
 .form input::placeholder{color:var(--dim)}
-.form input:focus{border-color:var(--bone);outline:none}
+.form input:focus{border-color:var(--bone)}
 .form__msg{margin-top:14px;min-height:1.4em;color:var(--glow)}
 .form__note{margin-top:8px;color:var(--dim);font-size:.85rem}
 
 /* footer */
 .foot{border-top:1px solid var(--line);padding-top:clamp(40px,6vw,80px);overflow:hidden}
 .foot__cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:32px;margin-bottom:clamp(40px,7vw,100px)}
-.foot__cols ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
-.foot__cols a{color:var(--bone)}
+.foot__cols ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.foot__cols a{display:inline-block;padding-block:2px;color:var(--bone)}
 .foot__cols a:hover{color:var(--glow)}
 .foot__end{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;padding-block:18px 26px;color:var(--dim);font-size:.85rem}
 .foot .wordmark{padding-bottom:0}
-.hero .wordmark{padding-bottom:58px}
-.foot__end{padding-bottom:64px}
+.foot__end a{display:inline-block;padding-block:2px;white-space:nowrap}
+@media (max-width:600px){.foot__cols{grid-template-columns:repeat(2,minmax(0,1fr))}.foot__cols>div:last-child{grid-column:1/-1}}
+@media (pointer:coarse){.foot__cols ul{gap:0;margin-top:6px}.foot__cols a,.foot__end a{display:inline-flex;align-items:center;min-height:44px}}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .rv{opacity:1;transform:none}
   .grain{animation:none}
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
 }
 
 /* release rows + live + concept tag */
@@ -270,27 +292,30 @@ canvas{display:block}
 .row a:hover,.row a:focus-visible{color:var(--ink);padding-left:20px}
 .row a:hover::before,.row a:focus-visible::before{transform:scaleY(1)}
 .row span{display:flex;flex-direction:column;gap:3px;min-width:0}
-.row strong{font:700 clamp(1.05rem,1.5vw,1.3rem)/1.15 var(--display);font-variation-settings:"wdth" 108}
+.row strong{font:600 clamp(1.05rem,1.5vw,1.3rem)/1.15 var(--display);letter-spacing:-.01em}
 .row em{font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim);transition:color .35s}
 .row a:hover em,.row a:focus-visible em{color:var(--ink)}
 .row i{font-style:normal;white-space:nowrap}
+.row i .row__w{display:inline}
+@media (max-width:600px){.row i .row__w{display:none}}
 .row__art{width:44px;height:44px;object-fit:cover;background:var(--ink-2);border:1px solid var(--line)}
 .cover__cap{margin-top:10px}
 .live{display:flex;flex-direction:column;gap:22px;align-items:flex-start;align-self:center;min-width:0}
 .gigs{list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--line)}
-.gig{position:relative;isolation:isolate;display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:26px 12px;border-bottom:1px solid var(--line);transition:color .35s,padding .5s var(--ease)}
-.gig::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
-.gig:hover{color:var(--ink);padding-left:22px}
-.gig:hover::before{transform:scaleY(1)}
-.gig time{white-space:nowrap;font:800 1.6rem/1 var(--display);font-variation-settings:"wdth" 62;text-transform:uppercase;font-variant-numeric:tabular-nums}
-.gig strong{min-width:0;font:700 clamp(1.1rem,1.9vw,1.6rem)/1.15 var(--display);font-variation-settings:"wdth" 108}
+.gig{border-bottom:1px solid var(--line)}
+.gig a{position:relative;isolation:isolate;display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:26px 12px;transition:color .35s,padding .5s var(--ease)}
+.gig a::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bone);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
+.gig a:hover,.gig a:focus-visible{color:var(--ink);padding-left:22px}
+.gig a:hover::before,.gig a:focus-visible::before{transform:scaleY(1)}
+.gig time{white-space:nowrap;font:300 1.6rem/1 var(--display);letter-spacing:-.02em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+.gig strong{min-width:0;font:600 clamp(1.1rem,1.9vw,1.6rem)/1.15 var(--display);letter-spacing:-.01em}
 .gig em{white-space:nowrap;font:500 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim);transition:color .35s}
-.gig:hover em{color:var(--ink)}
-@media (max-width:900px){.gig{grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:20px 8px}.gig strong{grid-column:1/-1}}
-.live__big{font:800 clamp(1.9rem,4.6vw,4.2rem)/.98 var(--display);font-variation-settings:"wdth" 100;letter-spacing:-.02em;max-width:16ch;text-wrap:balance}
+.gig a:hover em,.gig a:focus-visible em{color:var(--ink)}
+@media (max-width:900px){.gig a{grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:20px 8px}.gig strong{grid-column:1/-1}}
 .live p.dim{max-width:44ch}
-.mail{user-select:all;overflow-wrap:anywhere}
-.tag{position:fixed;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:55;padding:8px 12px;background:var(--ink-2);border:1px solid var(--line);color:var(--bone);font:500 .66rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.mail{overflow-wrap:anywhere}
+/* the concept label is a slim strip across the bottom, so it is always on screen without sitting on top of controls */
+.tag{position:fixed;left:0;right:0;bottom:0;z-index:55;margin:0;padding:7px var(--gut) calc(env(safe-area-inset-bottom,0px) + 7px);background:var(--ink-2);border-top:1px solid var(--line);color:var(--bone);text-align:center;font:500 .68rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -298,22 +323,22 @@ canvas{display:block}
 <p class="tag">Design concept · not the official site</p>
 
 <header class="nav" id="nav">
-  <a class="nav__logo" href="#top" aria-label="Moonlight Roller Rink, back to top">MRR</a>
+  <a class="nav__logo" href="#top" aria-label="Moonlight Roller Rink, back to top">Moonlight Roller Rink</a>
   <nav aria-label="Primary">
     <ul>
-      <li><a class="lk" href="#recordings"><span data-t="Music">Music</span></a></li>
-      <li><a class="lk" href="#live"><span data-t="Live">Live</span></a></li>
-      <li><a class="lk" href="#gallery"><span data-t="Gallery">Gallery</span></a></li>
-      <li><a class="lk" href="#videos"><span data-t="Videos">Videos</span></a></li>
-      <li><a class="lk" href="#about"><span data-t="About">About</span></a></li>
-      <li><a class="lk" href="#news"><span data-t="Newsletter">Newsletter</span></a></li>
+      <li><a class="lk" href="#live"><span class="lk__c"><span data-t="Shows">Shows</span></span></a></li>
+      <li><a class="lk" href="#music"><span class="lk__c"><span data-t="Music">Music</span></span></a></li>
+      <li><a class="lk" href="#gallery"><span class="lk__c"><span data-t="Gallery">Gallery</span></span></a></li>
+      <li><a class="lk" href="#videos"><span class="lk__c"><span data-t="Videos">Videos</span></span></a></li>
+      <li><a class="lk" href="#about"><span class="lk__c"><span data-t="About">About</span></span></a></li>
+      <li><a class="lk" href="#news"><span class="lk__c"><span data-t="Newsletter">Newsletter</span></span></a></li>
     </ul>
   </nav>
   <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span><span></span></button>
 </header>
-<div class="menu" id="menu">
-  <a href="#recordings" style="--i:0">Music</a>
-  <a href="#live" style="--i:1">Live</a>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <a href="#live" style="--i:0">Shows</a>
+  <a href="#music" style="--i:1">Music</a>
   <a href="#gallery" style="--i:2">Gallery</a>
   <a href="#videos" style="--i:3">Videos</a>
   <a href="#about" style="--i:4">About</a>
@@ -328,43 +353,70 @@ canvas{display:block}
     <div class="hero__shade"></div>
     <div class="hero__row">
       <div class="hero__lead">
-        <div class="np">
+        <a class="np" id="heroNow" href="#music">
           <span class="np__dot" aria-hidden="true"></span>
-          <div>
-            <p class="mono">Latest single · May 21, 2026</p>
-            <p class="np__t">Meet Me in Tucson</p>
-          </div>
-        </div>
+          <span>
+            <span class="mono np__k" id="heroNowK">Latest single · May 21, 2026</span>
+            <span class="np__t" id="heroNowT">Meet Me in Tucson</span>
+          </span>
+        </a>
         <p class="hero__intro">The original music project of Washington, DC songwriter Paul B, recorded with a rotating cast of friends.</p>
       </div>
       <div class="hero__ctl">
-        <a class="ext mono" href="https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS" target="_blank" rel="noopener">Listen on Spotify ↗</a>
-        <ol class="ticks" id="ticks" aria-label="Hero lighting"></ol>
+        <div class="btns">
+          <a class="btn btn--solid" href="https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+          <a class="btn" href="#live">See shows</a>
+        </div>
+        <div class="lights">
+          <span class="mono lights__k" id="lightsK">Lights</span>
+          <ol class="ticks" id="ticks" aria-labelledby="lightsK"></ol>
+          <button class="mono motion" id="motionBtn" type="button" aria-pressed="false">Pause motion</button>
+        </div>
       </div>
     </div>
-    <h1 class="wordmark" id="heroMark"><span>Moonlight</span><span>Roller Rink</span></h1>
+    <h1 class="wordmark" id="heroMark" aria-label="Moonlight Roller Rink"><span>Moonlight</span><span>Roller Rink</span></h1>
   </section>
 
   <section class="pulse wrap" id="pulse">
-    <h2><span>Musical</span><span>chairs</span><span class="hollow">with</span><span class="hollow">some of</span><span>the area’s</span><span>best</span></h2>
+    <h2 aria-label="Musical chairs with some of the area’s best"><span>Musical chairs</span><span class="hollow">with some of</span><span>the area’s best</span></h2>
+  </section>
+
+  <section class="sec wrap" id="live">
+    <div class="head">
+      <h2 class="rv">Upcoming shows</h2>
+      <p class="rv" style="--d:.1s">Solo acoustic shows this October. Tap a show for directions.</p>
+    </div>
+    <div class="tour">
+      <figure class="frame rv" data-par><img src="assets/gallery/acoustic-tribute.webp" width="1068" height="680" loading="lazy" decoding="async" alt="Paul playing a black Gibson acoustic at a microphone in his home studio"></figure>
+      <div class="live">
+        <p class="mono dim rv">Live acoustic · October</p>
+        <ol class="gigs rv" style="--d:.06s" id="gigs">
+          <li class="gig"><a href="https://www.google.com/maps/search/?api=1&amp;query=Mellow+Mushroom+Chantilly+VA" target="_blank" rel="noopener"><time datetime="2026-10-17">Sat Oct 17</time><strong>Mellow Mushroom, Chantilly</strong><em>6 – 9 PM · Map ↗</em></a></li>
+          <li class="gig"><a href="https://www.google.com/maps/search/?api=1&amp;query=Bluemont+Brewery+%26+Winery+Bluemont+VA" target="_blank" rel="noopener"><time datetime="2026-10-25">Sun Oct 25</time><strong>Bluemont Brewery &amp; Winery</strong><em>2 – 5 PM · Map ↗</em></a></li>
+        </ol>
+        <p class="dim" id="noGigs" hidden>No shows on the calendar right now. Join the newsletter to hear about the next ones.</p>
+        <p class="dim rv" style="--d:.12s">Paul B, solo and acoustic. Songs you know, sing-alongs, and a few originals.</p>
+        <a class="btn rv" style="--d:.18s" href="#news">Get show news</a>
+      </div>
+    </div>
   </section>
 
   <div class="mq mq--names" data-mq="1" data-rep="8" aria-label="Streaming on Spotify, Apple Music, Amazon Music and YouTube">
     <div class="mq__t" aria-hidden="true"><span>Spotify</span><span>Apple Music</span><span>Amazon Music</span><span>YouTube</span></div>
   </div>
 
-  <section class="sec wrap" id="recordings">
+  <section class="sec wrap" id="music">
     <div class="head">
-      <h2 class="rv">Recordings</h2>
+      <h2 class="rv">Music</h2>
       <p class="rv" style="--d:.1s">Fourteen singles and an EP since 2012. Pick a year to see what came out.</p>
     </div>
-    <div class="rec">
-      <div class="tabs rv" role="tablist" aria-label="Releases by year">
-        <button class="tab" role="tab" aria-selected="true" data-a="0"><b>2026</b><span>2 singles</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="1"><b>2024</b><span>4 singles</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="2"><b>2023</b><span>2 singles</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="3"><b>2022</b><span>1 EP</span></button>
-        <button class="tab" role="tab" aria-selected="false" data-a="4" aria-label="2012 to 2020, 6 singles"><b>’12–’20</b><span>6 singles</span></button>
+    <div class="rec" id="rec">
+      <div class="tabs rv" role="tablist" aria-label="Releases by year" id="tabs">
+        <button class="tab" role="tab" id="tab-0" aria-controls="recInfo" aria-selected="true" tabindex="0" data-a="0"><b>2026</b><span>2 singles</span></button>
+        <button class="tab" role="tab" id="tab-1" aria-controls="recInfo" aria-selected="false" tabindex="-1" data-a="1"><b>2024</b><span>4 singles</span></button>
+        <button class="tab" role="tab" id="tab-2" aria-controls="recInfo" aria-selected="false" tabindex="-1" data-a="2"><b>2023</b><span>2 singles</span></button>
+        <button class="tab" role="tab" id="tab-3" aria-controls="recInfo" aria-selected="false" tabindex="-1" data-a="3"><b>2022</b><span>1 EP</span></button>
+        <button class="tab" role="tab" id="tab-4" aria-controls="recInfo" aria-selected="false" tabindex="-1" data-a="4" aria-label="2012 to 2020, 6 singles"><b>’12–’20</b><span>6 singles</span></button>
       </div>
       <div class="rv" style="--d:.08s">
         <div class="cover" id="cover">
@@ -376,26 +428,7 @@ canvas{display:block}
         </div>
         <p class="cover__cap mono dim" id="coverCap">Meet Me in Tucson · artwork</p>
       </div>
-      <div class="rec__info rv" style="--d:.16s" id="recInfo" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="live">
-    <div class="head">
-      <h2 class="rv">Upcoming shows</h2>
-      <p class="rv" style="--d:.1s">Two acoustic shows left this October.</p>
-    </div>
-    <div class="tour">
-      <div class="frame rv" data-par><canvas width="720" height="1000" data-s="41" data-k="ball beams" role="img" aria-label="Mirror ball under light beams"></canvas></div>
-      <div class="live">
-        <p class="mono dim rv">Live acoustic · October</p>
-        <ol class="gigs rv" style="--d:.06s">
-          <li class="gig"><time datetime="2026-10-17">Sat Oct 17</time><strong>Mellow Mushroom, Chantilly</strong><em>6 – 9 PM</em></li>
-          <li class="gig"><time datetime="2026-10-25">Sun Oct 25</time><strong>Bluemont Brewery &amp; Winery</strong><em>2 – 5 PM</em></li>
-        </ol>
-        <p class="dim rv" style="--d:.12s">Paul Bonsiero, solo and acoustic. Songs you know, sing-alongs, and a few originals.</p>
-        <a class="btn rv" style="--d:.18s" href="#news">Get show news</a>
-      </div>
+      <div class="rec__info rv" style="--d:.16s" id="recInfo" role="tabpanel" aria-labelledby="tab-0"></div>
     </div>
   </section>
 
@@ -404,7 +437,7 @@ canvas{display:block}
       <h2 class="rv">Gallery</h2>
       <p class="rv" style="--d:.1s">From the studio and the living room. Drag the strip, or step through it.</p>
     </div>
-    <div class="rail" id="rail" tabindex="0" aria-label="Gallery, scroll sideways">
+    <div class="rail" id="rail" tabindex="0" role="region" aria-label="Gallery, scroll sideways">
       <figure><img src="assets/gallery/booth.webp" width="937" height="679" loading="lazy" decoding="async" alt="Paul in a vocal booth with an acoustic guitar and headphones, flashing a peace sign"><figcaption class="mono dim">In the booth · August 2026</figcaption></figure>
       <figure><img src="assets/gallery/radio-flyer.webp" width="937" height="679" loading="lazy" decoding="async" alt="Two musicians talking in a studio lit with blue lights"><figcaption class="mono dim">With Radio Flyer Records · August 2026</figcaption></figure>
       <figure><img src="assets/gallery/console.webp" width="1192" height="1070" loading="lazy" decoding="async" alt="Two people at a large mixing console in a recording studio"><figcaption class="mono dim">At the console · Summer 2026</figcaption></figure>
@@ -416,7 +449,6 @@ canvas{display:block}
       <figure><img src="assets/gallery/blackbird-stairs.webp" width="1036" height="1599" loading="lazy" decoding="async" alt="A chandelier over a wooden staircase with wrought-iron railings outside Studio D"><figcaption class="mono dim">Outside Studio D, Blackbird · March 2026</figcaption></figure>
       <figure><img src="assets/gallery/headstock.webp" width="1036" height="1599" loading="lazy" decoding="async" alt="A guitar headstock pointed at a mixing desk in a studio rack"><figcaption class="mono dim">Headstock and mixer, Blackbird · March 2026</figcaption></figure>
       <figure><img src="assets/gallery/guitar-wall.webp" width="1062" height="680" loading="lazy" decoding="async" alt="Paul playing a seafoam Jazzmaster in front of a wall of hanging guitars"><figcaption class="mono dim">Guitar wall · August 2025</figcaption></figure>
-      <figure><img src="assets/gallery/acoustic-tribute.webp" width="1068" height="680" loading="lazy" decoding="async" alt="Paul playing a black Gibson acoustic at a microphone in his home studio"><figcaption class="mono dim">Acoustic tribute · July 2025</figcaption></figure>
       <figure><img src="assets/gallery/hollow-body.webp" width="1068" height="679" loading="lazy" decoding="async" alt="Black and white shot of Paul playing a hollow-body electric guitar at the microphone"><figcaption class="mono dim">Covers archive · July 2025</figcaption></figure>
       <figure><img src="assets/gallery/black-acoustic.webp" width="1068" height="679" loading="lazy" decoding="async" alt="Black and white shot of Paul playing an acoustic guitar in his home studio"><figcaption class="mono dim">Home studio · March 2025</figcaption></figure>
       <figure><img src="assets/gallery/keys.webp" width="1068" height="679" loading="lazy" decoding="async" alt="Black and white close-up of a hand on keyboard keys by a window"><figcaption class="mono dim">On the keys · August 2024</figcaption></figure>
@@ -427,32 +459,23 @@ canvas{display:block}
       <figure><img src="assets/gallery/trampoline.webp" width="1206" height="1723" loading="lazy" decoding="async" alt="Paul mid-air doing the splits above a backyard trampoline"><figcaption class="mono dim">Weekend mode</figcaption></figure>
     </div>
     <div class="ctl wrap">
-      <p class="ctl__n" id="gCount" aria-live="polite">01 / 20</p>
-      <div class="ctl__b"><button class="btn" id="gPrev">Prev</button><button class="btn" id="gNext">Next</button></div>
+      <p class="ctl__n" id="gCount" aria-live="polite">01 / 19</p>
+      <div class="ctl__b"><button class="btn" id="gPrev" type="button" disabled>Prev</button><button class="btn" id="gNext" type="button">Next</button></div>
     </div>
   </section>
 
   <section class="sec wrap" id="videos">
     <div class="head">
       <h2 class="rv">Videos</h2>
-      <p class="rv" style="--d:.1s">Three music videos. Choose one from the list, then watch it on YouTube.</p>
+      <p class="rv" style="--d:.1s">Three music videos, on YouTube.</p>
     </div>
-    <div class="vid">
-      <div class="rv">
-        <div class="stage" id="stage">
-          <canvas width="960" height="540" id="stageCv" aria-hidden="true"></canvas>
-          <p class="stage__n mono" id="vCount">01 / 03</p>
-          <a class="btn btn--solid stage__play" href="https://www.youtube.com/channel/UCc_iNGbLGBryrJdyDx2ZHcQ" target="_blank" rel="noopener">Watch on YouTube ↗</a>
-        </div>
-        <div class="vid__meta" id="vMeta" aria-live="polite"></div>
-      </div>
-      <ol class="vlist rv" style="--d:.1s" id="vList"></ol>
-    </div>
+    <ol class="vcards rv" id="vList"></ol>
   </section>
 
   <section class="sec wrap" id="about">
     <div class="life">
       <div>
+        <h2 class="mono dim rv">About</h2>
         <p class="mono dim rv">Songs released since 2012</p>
         <p class="life__y" id="count" aria-label="19">19</p>
       </div>
@@ -482,7 +505,7 @@ canvas{display:block}
 
 <footer class="foot" id="foot">
   <div class="wrap foot__cols">
-    <div><p class="mono dim">Links</p><ul><li><a href="#recordings">Music</a></li><li><a href="#live">Live</a></li><li><a href="#videos">Videos</a></li><li><a href="#about">About</a></li></ul></div>
+    <div><p class="mono dim">Site</p><ul><li><a href="#live">Shows</a></li><li><a href="#music">Music</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#videos">Videos</a></li><li><a href="#about">About</a></li><li><a href="#news">Newsletter</a></li></ul></div>
     <div><p class="mono dim">Listen</p><ul>
       <li><a href="https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS" target="_blank" rel="noopener">Spotify</a></li>
       <li><a href="https://music.apple.com/us/artist/moonlight-roller-rink/589244345" target="_blank" rel="noopener">Apple Music</a></li>
@@ -491,11 +514,11 @@ canvas{display:block}
     <div><p class="mono dim">Follow</p><ul>
       <li><a href="https://www.instagram.com/moonlight_roller_rink_project" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="https://www.instagram.com/radio_flyer_records" target="_blank" rel="noopener">Radio Flyer Records</a></li></ul></div>
-    <div><p class="mono dim">Contact</p><ul><li class="mail">paul@moonlightrollerrink.com</li></ul></div>
+    <div><p class="mono dim">Contact</p><ul><li><a class="mail" href="mailto:paul@moonlightrollerrink.com">paul@moonlightrollerrink.com</a></li></ul></div>
   </div>
   <p class="wordmark" id="footMark"><span>Moonlight</span><span>Roller Rink</span></p>
   <div class="wrap foot__end">
-    <span>Unofficial design concept. The band’s official site is moonlightrollerrink.com. Photos and release artwork are the band’s own (the hero photo re-toned for this concept); the remaining imagery is a generated placeholder.</span>
+    <span>Unofficial design concept. The band’s official site is moonlightrollerrink.com. Photos and release artwork are the band’s own (the hero photo re-toned for this concept); the hero backdrop is generated.</span>
     <a href="#top">Back to top ↑</a>
   </div>
 </footer>
@@ -514,8 +537,9 @@ canvas{display:block}
   const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
   const rng = seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const SPOTIFY = 'https://open.spotify.com/artist/4q3cf48CAhsVntvkgciMnS', APPLE = 'https://music.apple.com/us/artist/moonlight-roller-rink/589244345';
+  const AM = 'https://music.apple.com/us/album/', YT = 'https://www.youtube.com/channel/UCc_iNGbLGBryrJdyDx2ZHcQ';
 
-  /* ---------- generated imagery: a rink at night ---------- */
+  /* ---------- generated hero backdrop: a rink at night ---------- */
   function scene(ctx, w, h, seed, o = {}) {
     const r = rng(seed), t = o.t || 0, M = Math.max(w, h), m = Math.min(w, h);
     // a palette (hero frames) sets the colours and the wave style; everything else uses the site colours
@@ -563,23 +587,11 @@ canvas{display:block}
         ring(rad, ang => amp * Math.sin(ang * k + t * 2.1 + i * 1.3) + amp * .5 * Math.sin(ang * (k * 2 + 1) - t * 3.2 + i));
       });
       if (ws === 'clean') travel(13, .06, (i, p, rad, f) => { ctx.strokeStyle = rgba(spark[i % spark.length], f * .5); ctx.lineWidth = lw * (1.3 - p * .8); ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke(); });
-      if (ws === 'spike') travel(6, .1, (i, p, rad, f) => { const amp = R * (.02 + .03 * p); ctx.strokeStyle = rgba(spark[0], f * .55); ctx.lineWidth = lw * (1.2 - p * .6); ring(rad, ang => amp * Math.sin(ang * 36 + t * 9 * (i % 2 ? 1 : -1))); });
-      if (ws === 'dash') {
-        travel(7, .07, (i, p, rad, f) => { ctx.setLineDash([R * .22, R * .14]); ctx.lineDashOffset = t * R * .5 * (i % 2 ? 1 : -1); ctx.strokeStyle = rgba(spark[i % spark.length], f * .7); ctx.lineWidth = lw * 2.2 * (1.4 - p); ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke(); });
-        ctx.setLineDash([]);
-      }
       if (ws === 'glow') travel(4, .045, (i, p, rad, f) => {   // a few soft neon rings drifting out slowly: a wide haze with a thin bright core
         const c = spark[i % spark.length];
         ctx.strokeStyle = rgba(c, f * .14); ctx.lineWidth = lw * 9; ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke();
         ctx.strokeStyle = rgba(c, f * .55); ctx.lineWidth = lw * 1.4; ctx.beginPath(); ctx.arc(mx, my, rad, 0, 7); ctx.stroke();
       });
-      if (ws === 'orbit') for (let i = 0; i < 5; i++) {   // tilted orbits, each with a spark running along it
-        const rx = R * (1.45 + i * .5), ry = rx * .3, rot = -.35 + i * .32 + Math.sin(t * .2 + i) * .08, c = spark[i % spark.length], f = 1 - i * .14;
-        ctx.strokeStyle = rgba(c, .32 * f); ctx.lineWidth = lw * 1.2; ctx.beginPath(); ctx.ellipse(mx, my, rx, ry, rot, 0, 6.2832); ctx.stroke();
-        const ph = t * (.6 - i * .07) * (i % 2 ? -1 : 1) + i * 1.9, px = Math.cos(ph) * rx, py = Math.sin(ph) * ry;
-        const sx = mx + px * Math.cos(rot) - py * Math.sin(rot), sy = my + px * Math.sin(rot) + py * Math.cos(rot), sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * .16);
-        sg.addColorStop(0, rgba(c, .95 * f)); sg.addColorStop(1, rgba(c, 0)); ctx.fillStyle = sg; ctx.fillRect(sx - R * .16, sy - R * .16, R * .32, R * .32);
-      }
     }
     if (o.rink) {
       const hy = h * .68;
@@ -597,25 +609,7 @@ canvas{display:block}
       ctx.restore();
     }
     ctx.globalCompositeOperation = 'source-over';
-    if (o.ball) {
-      const bx = w * (o.moon ? (mx < w / 2 ? .68 : .32) : .5), by = h * (o.hero ? .23 : .3), rb = m * (o.hero ? .13 : .17), N = 9;
-      ctx.strokeStyle = rgba(C.bone, .4); ctx.lineWidth = Math.max(1, m * .003); ctx.beginPath(); ctx.moveTo(bx, 0); ctx.lineTo(bx, by - rb); ctx.stroke();
-      ctx.fillStyle = C.ink2; ctx.beginPath(); ctx.arc(bx, by, rb, 0, 7); ctx.fill();
-      for (let i = -N; i <= N; i++) {
-        const lat = i / (N + .5) * Math.PI / 2, cy = Math.sin(lat), cl = Math.cos(lat), cnt = Math.max(4, Math.round(3.2 * N * cl));
-        for (let j = 0; j < cnt; j++) {
-          const lon = (j / cnt * 6.2832 + t * .35 + i * .11) % 6.2832, z = Math.cos(lon); if (z <= .05) continue;
-          const hs = Math.abs(Math.sin(i * 12.9898 + j * 78.233) * 43758.5453) % 1, c = spark[Math.floor(hs * spark.length)];
-          const fw = rb * cl * (6.2832 / cnt) * z * .8, fh = rb * cl * (Math.PI / (2 * N + 1)) * .8;
-          ctx.fillStyle = rgba(c, (.2 + .8 * hs) * z * (hs > .78 ? 1 : .55));
-          ctx.fillRect(bx + rb * cl * Math.sin(lon) - fw / 2, by + rb * cy - fh / 2, fw, fh);
-        }
-      }
-      ctx.globalCompositeOperation = 'lighter';
-      const hg = ctx.createRadialGradient(bx - rb * .35, by - rb * .4, 0, bx - rb * .35, by - rb * .4, rb * .9);
-      hg.addColorStop(0, rgba(C.bone, .4)); hg.addColorStop(1, rgba(C.bone, 0)); ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(bx, by, rb, 0, 7); ctx.fill();
-    }
-    if (o.ball || o.dots) {
+    if (o.dots) {
       ctx.globalCompositeOperation = 'lighter';
       for (let k = 0; k < 46; k++) {
         const a = r() * 6.2832 + t * (.18 + (k % 3) * .04), e = r(), rr = (.005 + r() * .011) * M, c = spark[Math.floor(r() * spark.length)], z = Math.cos(a);
@@ -628,7 +622,6 @@ canvas{display:block}
     v.addColorStop(0, rgba(P.bg, 0)); v.addColorStop(1, rgba(P.bg, .72));
     ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
   }
-  const opts = k => ({ moon: /moon/.test(k), ball: /ball/.test(k), rink: /rink/.test(k), beams: /beams/.test(k), bw: /bw/.test(k) });
 
 
   (() => { const c = document.createElement('canvas'); c.width = c.height = 140; const x = c.getContext('2d'), d = x.createImageData(140, 140);
@@ -639,41 +632,39 @@ canvas{display:block}
   const mqs = $$('[data-mq]').map(el => { const t = el.firstElementChild, rep = +el.dataset.rep; t.innerHTML = Array(rep).fill(t.innerHTML).join(''); return { el, t, rep, dir: +el.dataset.mq, x: 0, w: 0 }; });
   const measureMq = () => mqs.forEach(m => m.w = m.t.scrollWidth / m.rep);
 
-  $$('canvas[data-s]').forEach(c => scene(c.getContext('2d'), c.width, c.height, +c.dataset.s, { ...opts(c.dataset.k || ''), t: +c.dataset.s }));
-
   /* ---------- wordmarks: fit each line to the width, then breathe ---------- */
   const heroMark = $('#heroMark'), footMark = $('#footMark');
+  // each mark is sized to its column: two stacked lines, or one line when the spans sit side by side (wide hero)
   function fit() {
-    $$('.wordmark span').forEach(s => {
-      const box = s.parentElement, cs = getComputedStyle(box);
-      const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      s.style.setProperty('--wd', 125); s.style.fontSize = '100px';
-      const w = s.getBoundingClientRect().width;
-      s.style.fontSize = (100 * avail / w * .995) + 'px';
-      s.style.removeProperty('--wd');
+    $$('.wordmark').forEach(box => {
+      const cs = getComputedStyle(box), avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const spans = $$('span', box), oneLine = getComputedStyle(spans[0]).display !== 'block';
+      spans.forEach(s => { s.style.setProperty('--wd', 125); s.style.fontSize = '100px'; });
+      if (oneLine) {
+        const w = spans.reduce((a, sp) => a + sp.getBoundingClientRect().width + parseFloat(getComputedStyle(sp).marginLeft), 0);
+        spans.forEach(sp => sp.style.fontSize = (100 * avail / w * .995) + 'px');
+      } else spans.forEach(sp => sp.style.fontSize = (100 * avail / sp.getBoundingClientRect().width * .995) + 'px');
+      spans.forEach(sp => sp.style.removeProperty('--wd'));
     });
   }
 
   /* ---------- hero ---------- */
   const hero = $('#top'), hc = $('#heroBg'), hx = hc.getContext('2d'), cut = $('#heroCut'), ticks = $('#ticks');
-  // six frames, each its own light: colours and the kind of sound wave coming off the moon
+  // three frames, all from the site palette so the re-toned photo sits in each of them
   const slides = [
     { s: 11, rink: 1, name: 'Midnight', pal: { bg: C.ink, glow: [C.dusk, C.neon, C.dusk, C.glow, C.neon], spark: [C.bone, C.neon, C.glow, C.bone], moon: C.bone, halo: C.bone, rail: C.neon, accent: C.neon, wave: 'wobble' } },
     { s: 23, beams: 1, name: 'Neon', pal: { bg: '#12041a', glow: ['#ff4d8d', '#b3206f', '#7a1fd6', '#ff4d8d'], spark: ['#ffd3e4', '#ff4d8d', '#ff8cc0'], moon: '#ffd3e4', halo: '#ff4d8d', rail: '#ff4d8d', accent: '#ff4d8d', wave: 'glow' } },
-    { s: 37, rink: 1, beams: 1, name: 'Ice', pal: { bg: '#03131a', glow: ['#0f8f9a', '#1d5fa8', '#6fe3d4', '#0f8f9a'], spark: ['#d9fbff', '#6fe3d4', '#8fd3ff'], moon: '#e4fbff', halo: '#6fe3d4', rail: '#6fe3d4', accent: '#6fe3d4', wave: 'clean' } },
-    { s: 44, name: 'Sunset', pal: { bg: '#170806', glow: ['#ff6a3d', '#c42a4a', '#ffae42', '#7a1f5c'], spark: ['#ffd9a0', '#ffae42', '#ff6a3d'], moon: '#ffae42', halo: '#ff8a3d', rail: '#ff6a3d', accent: '#ff8a3d', wave: 'dash' } },
-    { s: 58, beams: 1, bw: 1, name: 'Mono', pal: { bg: '#0a0a0b', glow: [C.bone], glowA: .4, spark: [C.bone], moon: C.bone, halo: C.bone, rail: C.bone, accent: C.bone, wave: 'spike' } },
-    { s: 61, rink: 1, name: 'Eclipse', pal: { bg: '#040d07', glow: ['#2f7a2a', '#b8ff5a', '#1f5c3a'], spark: ['#eaffc8', '#b8ff5a', '#7dffb0'], moon: '#d4ff8a', halo: '#b8ff5a', rail: '#b8ff5a', accent: '#b8ff5a', wave: 'orbit' } }
+    { s: 37, rink: 1, name: 'Ice', pal: { bg: '#03131a', glow: ['#0f8f9a', '#1d5fa8', '#6fe3d4', '#0f8f9a'], spark: ['#d9fbff', '#6fe3d4', '#8fd3ff'], moon: '#e4fbff', halo: '#6fe3d4', rail: '#6fe3d4', accent: '#6fe3d4', wave: 'clean' } }
   ];
-  const DUR = 7000; let slide = 0, slideT = performance.now();
+  const DUR = 9000; let slide = 0, slideMs = 0, still = false;
   ticks.style.setProperty('--dur', DUR + 'ms');
-  slides.forEach((_, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.textContent = pad2(i + 1); b.setAttribute('aria-label', 'Frame ' + (i + 1) + ': ' + slides[i].name); b.onclick = () => setSlide(i); li.append(b); ticks.append(li); });
+  slides.forEach((_, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.textContent = pad2(i + 1); b.type = 'button'; b.setAttribute('aria-label', slides[i].name + ' lights'); b.onclick = () => setSlide(i); li.append(b); ticks.append(li); });
   const tickBtns = $$('button', ticks);
   function setSlide(i, quiet) {
-    slide = (i + slides.length) % slides.length; slideT = performance.now();
+    slide = (i + slides.length) % slides.length; slideMs = 0;
     tickBtns.forEach((b, j) => b.setAttribute('aria-current', j === slide));
     hero.style.setProperty('--accent', slides[slide].pal.accent);
-    if (!quiet && !RM) { cut.classList.remove('go'); void cut.offsetWidth; cut.classList.add('go'); }
+    if (!quiet && !RM && !still) { cut.classList.remove('go'); void cut.offsetWidth; cut.classList.add('go'); }
     if (RM) drawHero(0);
   }
   const heroImg = $('#heroImg'), moonAt = { mx: .5, my: .26, mr: .26 }; let heroP = 0, riseP = RM ? 1 : 0;
@@ -682,9 +673,23 @@ canvas{display:block}
     const fh = heroImg.offsetHeight || H * .92;   // moon sits behind the head: 20% down the figure, a bit wider than the shoulders
     moonAt.my = (H - fh + fh * .2) / H; moonAt.mr = fh * .283 / H;
   }
+  // one control stops everything that moves by itself: the backdrop, the frame change, the ticker, the sleeve lights and the grain
+  const motionBtn = $('#motionBtn');
+  if (RM) motionBtn.hidden = true;
+  motionBtn.onclick = () => { still = !still; root.classList.toggle('still', still); motionBtn.setAttribute('aria-pressed', still); motionBtn.textContent = still ? 'Play motion' : 'Pause motion'; };
   function drawHero(now) { const sl = slides[slide]; scene(hx, hc.width, hc.height, sl.s, { ...sl, moon: 1, dots: 1, waves: 1, t: now / 1000, mx: moonAt.mx, my: moonAt.my + (1 - riseP) * .16 - heroP * .05, mr: moonAt.mr }); }
 
-  /* ---------- recordings ---------- */
+  /* ---------- shows ---------- */
+  (() => {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const gigs = $$('.gig').map(el => ({ el, when: new Date($('time', el).dateTime + 'T00:00:00'), day: $('time', el).textContent, where: $('strong', el).textContent }));
+    gigs.forEach(g => g.el.hidden = g.when < today);
+    const next = gigs.find(g => g.when >= today);
+    $('#noGigs').hidden = !!next;
+    if (next) { $('#heroNow').href = '#live'; $('#heroNowK').textContent = 'Next show · ' + next.day; $('#heroNowT').textContent = next.where; }
+  })();
+
+  /* ---------- music ---------- */
   // artwork: file in assets/, title, alt text, tint (monochrome sleeves pick up the rink's colours)
   const ART = {
     tucson: ['meet-me-in-tucson', 'Meet Me in Tucson', 'the band recording in a studio, seen from above', 1],
@@ -703,24 +708,28 @@ canvas{display:block}
     ghost: ['ghost-town', 'Ghost Town', 'a face in a red and magenta screen print'],
     spin: ['spin', 'Spin', 'a clear bass drum with the band name painted in teal, in black and white']
   };
-  // each year shows its latest release's art; song rows carry their own
+  // each year shows its latest release's art; song rows carry their own.
+  // a row is [title, label, artwork key, Apple Music path]; rows without a path open a Spotify search for that song
   const albums = [
-    { y: 2026, k: 'Singles', h: 'Two new singles', art: 'tucson', items: [['Meet Me in Tucson', 'Single · May 21, 2026', 'tucson'], ['Every Breaking Color', 'Single · Mar 5, 2026', 'ebc']] },
-    { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby'], ['Hold Steady', 'Single · Jun 28, 2024', 'hold'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show']] },
-    { y: 2023, k: 'Singles', h: 'Two singles', art: 'golden', items: [['Stay Golden', 'Single · May 12, 2023', 'golden'], ['Jodie Whittaker', 'Single · Mar 23, 2023', 'jodie']] },
-    { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness'], ['A Chapel in the City', 'EP track', 'madness'], ['Bridges', 'EP track', 'madness'], ['Sun Crashes', 'EP track', 'madness'], ['Artifacts', 'EP track', 'madness']] },
+    { y: 2026, k: 'Singles', h: 'Two new singles', art: 'tucson', items: [['Meet Me in Tucson', 'Single · May 21, 2026', 'tucson', 'meet-me-in-tucson/6770603461?i=6770603462'], ['Every Breaking Color', 'Single · Mar 5, 2026', 'ebc', 'every-breaking-color/1883121892?i=1883121893']] },
+    { y: 2024, k: 'Singles', h: 'Four singles', art: 'bobby', items: [['Bobby Pins', 'Single · Sep 27, 2024', 'bobby', 'bobby-pins/1769657158?i=1769657159'], ['Hold Steady', 'Single · Jun 28, 2024', 'hold', 'hold-steady/1753614434?i=1753614438'], ['Crystal Skulls', 'Single · Jun 21, 2024', 'skulls', 'crystal-skulls/1753614488?i=1753614491'], ['The Show Goes On', 'Single · Feb 7, 2024', 'show', 'the-show-goes-on/1728704394?i=1728704400']] },
+    { y: 2023, k: 'Singles', h: 'Two singles', art: 'golden', items: [['Stay Golden', 'Single · May 12, 2023', 'golden', 'stay-golden/1688103354?i=1688103356'], ['Jodie Whittaker', 'Single · Mar 23, 2023', 'jodie', 'jodie-whittaker/1677664942?i=1677665061']] },
+    { y: 2022, k: 'EP', h: 'All This Madness', art: 'madness', items: [['All This Madness', 'EP · Sep 21, 2022', 'madness', 'all-this-madness-ep/1646857875'], ['A Chapel in the City', 'EP track', 'madness', 'a-chapel-in-the-city/1646857875?i=1646858147'], ['Bridges', 'EP track', 'madness', 'bridges/1646857875?i=1646858152'], ['Sun Crashes', 'EP track', 'madness', 'sun-crashes/1646857875?i=1646858153'], ['Artifacts', 'EP track', 'madness', 'artifacts/1646857875?i=1646858154']] },
     { y: '2012–2020', k: 'Singles', h: 'Six early singles', art: 'hurricane', items: [['Hurricane Eyes', 'Single · Jan 15, 2020', 'hurricane'], ['Polaroids', 'Single · Feb 1, 2019', 'polaroids'], ['Fingers Crossed', 'Single · Mar 31, 2016', 'fingers'], ['Rooftops', 'Single · Jun 9, 2015', 'rooftops'], ['Ghost Town', 'Single · Apr 17, 2014', 'ghost'], ['Spin', 'Single · Dec 12, 2012', 'spin']] }
   ];
+  const songLink = it => it[3] ? [AM + it[3], 'Apple Music'] : ['https://open.spotify.com/search/' + encodeURIComponent('Moonlight Roller Rink ' + it[0]), 'Spotify'];
   const recInfo = $('#recInfo'), tabs = $$('.tab'), coverEl = $('#cover'), coverCap = $('#coverCap'); let z = 4;
   const layers = { tucson: $('[data-art="tucson"]', coverEl) };
   Object.entries(ART).forEach(([key, [file, title, alt, tint]]) => {
     if (layers[key]) return;
     const d = document.createElement('div'); d.className = 'art' + (tint ? ' art--tint' : ''); d.dataset.art = key;
-    d.innerHTML = `<img src="assets/${file}.webp" width="728" height="728" decoding="async" alt="">${tint ? '<span class="art__tone"></span>' : ''}`;
+    d.innerHTML = `<img src="assets/${file}.webp" width="728" height="728" loading="lazy" decoding="async" alt="">${tint ? '<span class="art__tone"></span>' : ''}`;
     $('img', d).alt = title + ' artwork: ' + alt; coverEl.prepend(d); layers[key] = d;
   });
   let shown = 'tucson';
-  new IntersectionObserver(es => coverEl.classList.toggle('idle', !es[0].isIntersecting)).observe(coverEl);
+  // the other sleeves wait until the section is on screen, then load so the first tab change has them ready
+  let warmed = false; const warm = () => { if (warmed) return; warmed = true; $$('img', coverEl).forEach(im => im.loading = 'eager'); };
+  new IntersectionObserver(es => { coverEl.classList.toggle('idle', !es[0].isIntersecting); if (es[0].isIntersecting) warm(); }).observe(coverEl);
   function showArt(key, quick) {
     if (key === shown) return;
     const old = layers[shown], el = layers[key]; shown = key;
@@ -732,9 +741,10 @@ canvas{display:block}
   }
   function setAlbum(i, first) {
     const a = albums[i];
-    tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i));
+    tabs.forEach((t, j) => { t.setAttribute('aria-selected', j === i); t.tabIndex = j === i ? 0 : -1; });
+    recInfo.setAttribute('aria-labelledby', tabs[i].id);
     recInfo.classList.remove('swap');
-    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(s => `<li class="row"><a href="${SPOTIFY}" target="_blank" rel="noopener" data-art="${s[2]}"><img class="row__art" src="assets/thumbs/${ART[s[2]][0]}.webp" width="44" height="44" alt=""><span><strong>${s[0]}</strong><em>${s[1]}</em></span><i class="mono">Listen ↗</i></a></li>`).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">Apple Music ↗</a></div>`;
+    recInfo.innerHTML = `<p class="mono dim">${a.y} · ${a.k}</p><h3>${a.h}</h3><ol class="rows">${a.items.map(it => { const [url, where] = songLink(it); return `<li class="row"><a href="${url}" target="_blank" rel="noopener" data-art="${it[2]}"><img class="row__art" src="assets/thumbs/${ART[it[2]][0]}.webp" width="44" height="44" loading="lazy" alt=""><span><strong>${it[0]}</strong><em>${it[1]}</em></span><i class="mono">${where.replace(' Music', '<span class="row__w"> Music</span>')} ↗</i></a></li>`; }).join('')}</ol><div class="btns"><a class="btn btn--solid" href="${SPOTIFY}" target="_blank" rel="noopener">All on Spotify ↗</a><a class="btn" href="${APPLE}" target="_blank" rel="noopener">All on Apple Music ↗</a></div>`;
     // pointing at or tabbing to a song previews its sleeve; leaving the list returns to the year's cover
     const rows = $('.rows', recInfo);
     $$('a', rows).forEach(r => { const go = () => showArt(r.dataset.art, true); r.addEventListener('pointerenter', go); r.addEventListener('focus', go); });
@@ -745,6 +755,13 @@ canvas{display:block}
     showArt(a.art);
   }
   tabs.forEach(t => t.onclick = () => setAlbum(+t.dataset.a));
+  // arrow keys move between years, as a tab list should
+  $('#tabs').addEventListener('keydown', e => {
+    const i = tabs.indexOf(document.activeElement), k = e.key; if (i < 0) return;
+    const n = k === 'ArrowDown' || k === 'ArrowRight' ? i + 1 : k === 'ArrowUp' || k === 'ArrowLeft' ? i - 1 : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : null;
+    if (n === null) return;
+    e.preventDefault(); const j = (n + tabs.length) % tabs.length; tabs[j].focus(); setAlbum(j);
+  });
   if (!RM) {   // tilt toward the pointer and aim the spotlight at it (mouse only, so touch scrolling never tilts)
     coverEl.addEventListener('pointermove', e => {
       if (e.pointerType !== 'mouse') return;
@@ -761,10 +778,11 @@ canvas{display:block}
   const rail = $('#rail'), figs = $$('figure', rail), gCount = $('#gCount');
   const railL = () => rail.getBoundingClientRect().left + parseFloat(getComputedStyle(rail).paddingLeft);
   const near = () => { const l = railL(); let b = 0, bd = 1e9; figs.forEach((f, i) => { const d = Math.abs(f.getBoundingClientRect().left - l); if (d < bd) { bd = d; b = i; } }); return b; };
-  const gUpdate = () => { const end = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4; gCount.textContent = pad2((end ? figs.length - 1 : near()) + 1) + ' / ' + pad2(figs.length); };
+  const gPrev = $('#gPrev'), gNext = $('#gNext');
+  const gUpdate = () => { const end = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4; gCount.textContent = pad2((end ? figs.length - 1 : near()) + 1) + ' / ' + pad2(figs.length); gPrev.disabled = rail.scrollLeft < 4; gNext.disabled = end; };
   const gGo = i => { i = clamp(i, 0, figs.length - 1); rail.scrollTo({ left: figs[i].getBoundingClientRect().left - railL() + rail.scrollLeft, behavior: RM ? 'auto' : 'smooth' }); };
   rail.addEventListener('scroll', gUpdate, { passive: true });
-  $('#gPrev').onclick = () => gGo(near() - 1); $('#gNext').onclick = () => gGo(near() + 1);
+  gPrev.onclick = () => gGo(near() - 1); gNext.onclick = () => gGo(near() + 1);
   let drag = null;
   rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; drag = { x: e.clientX, l: rail.scrollLeft }; rail.classList.add('drag'); rail.setPointerCapture(e.pointerId); });
   rail.addEventListener('pointermove', e => { if (drag) rail.scrollLeft = drag.l - (e.clientX - drag.x); });
@@ -772,34 +790,17 @@ canvas{display:block}
   rail.addEventListener('pointerup', endDrag); rail.addEventListener('pointercancel', endDrag);
 
   /* ---------- videos ---------- */
+  // each card opens that video in the band's YouTube channel; give a video an artwork key from ART to show its sleeve
   const vids = [
-    { t: 'The Show Goes On', s: 301, o: 'ball beams' },
-    { t: 'Knights & Queens', s: 302, o: 'moon rink' },
-    { t: 'Stay Golden', s: 303, o: 'ball rink' }
+    { t: 'The Show Goes On', art: 'show' },
+    { t: 'Knights & Queens' },
+    { t: 'Stay Golden', art: 'golden' }
   ];
-  const vList = $('#vList'), vMeta = $('#vMeta'), vCount = $('#vCount'), sc = $('#stageCv'), sx = sc.getContext('2d'), stage = $('#stage');
-  let vid = 0, playT = 0;
   vids.forEach((v, i) => {
     const li = document.createElement('li');
-    li.innerHTML = `<button><canvas width="176" height="100" aria-hidden="true"></canvas><span></span><time>Video</time></button>`;
-    $('span', li).textContent = v.t;
-    scene($('canvas', li).getContext('2d'), 176, 100, v.s, opts(v.o));
-    $('button', li).onclick = () => setVid(i); vList.append(li);
+    li.innerHTML = `<a class="vcard" href="${YT}/search?query=${encodeURIComponent(v.t)}" target="_blank" rel="noopener"><span class="vcard__img">${v.art ? `<img src="assets/${ART[v.art][0]}.webp" width="728" height="728" loading="lazy" decoding="async" alt="">` : ''}<span class="vcard__play" aria-hidden="true"></span></span><span class="mono dim">${pad2(i + 1)} / ${pad2(vids.length)} · Music video</span><strong></strong><em class="mono">Watch on YouTube ↗</em></a>`;
+    $('strong', li).textContent = v.t; $('#vList').append(li);
   });
-  const vBtns = $$('button', vList);
-  const drawStage = () => scene(sx, sc.width, sc.height, vids[vid].s, { ...opts(vids[vid].o), t: playT });
-  function setVid(i, first) {
-    vid = i; const v = vids[i];
-    vBtns.forEach((b, j) => b.setAttribute('aria-current', j === i));
-    vCount.textContent = pad2(i + 1) + ' / ' + pad2(vids.length);
-    vMeta.classList.remove('swap');
-    vMeta.innerHTML = `<h3></h3><p class="mono dim">Music video · on YouTube</p>`; $('h3', vMeta).textContent = v.t;
-    drawStage();
-    if (first) return;
-    void vMeta.offsetWidth; vMeta.classList.add('swap');
-    sc.classList.remove('wipe'); void sc.offsetWidth; sc.classList.add('wipe');
-  }
-  setVid(0, true);
 
   /* ---------- newsletter ---------- */
   $('#form').addEventListener('submit', e => {
@@ -809,10 +810,17 @@ canvas{display:block}
 
   /* ---------- nav ---------- */
   const nav = $('#nav'), menu = $('#menu'), menuBtn = $('#menuBtn'); let lastY = 0, menuOpen = false;
-  const setMenu = o => { menuOpen = o; menu.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); menuBtn.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); };
+  // open: the page behind stops scrolling and leaves the tab order, focus moves into the menu; closing hands focus back
+  const setMenu = (o, viaLink) => {
+    if (o === menuOpen) return; menuOpen = o;
+    menu.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); menuBtn.setAttribute('aria-label', o ? 'Close menu' : 'Open menu');
+    root.style.overflow = o ? 'hidden' : ''; [$('main'), $('#foot')].forEach(el => el.inert = o);
+    if (o) $('a', menu).focus({ preventScroll: true }); else if (!viaLink) menuBtn.focus({ preventScroll: true });
+  };
   menuBtn.onclick = () => setMenu(!menuOpen);
-  $$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
+  $$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false, true)));
   addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  matchMedia('(min-width:821px)').addEventListener('change', e => { if (e.matches) setMenu(false, true); });
   addEventListener('scroll', () => { const y = scrollY; nav.classList.toggle('hide', y > lastY && y > 240 && !menuOpen); lastY = y; }, { passive: true });
 
   /* ---------- reveal + visibility ---------- */
@@ -820,21 +828,25 @@ canvas{display:block}
   $$('.rv').forEach(e => rio.observe(e));
   const vio = new IntersectionObserver(es => es.forEach(e => e.target._v = e.isIntersecting), { rootMargin: '15% 0px' });
   const pulse = $('#pulse'), lines = $$('span', pulse), about = $('#about'), countEl = $('#count'), foot = $('#foot'), frames = $$('[data-par]');
-  [hero, pulse, about, foot, stage, ...frames, ...mqs.map(m => m.el)].forEach(e => vio.observe(e));
+  [hero, pulse, about, foot, ...frames, ...mqs.map(m => m.el)].forEach(e => vio.observe(e));
 
   /* ---------- one loop for everything that moves ---------- */
-  let sy = scrollY, last = performance.now(), wdH = '', wdF = '', cn = ''; const tIntro = performance.now() + 150;
+  let sy = scrollY, last = performance.now(), wdH = '', wdF = '', cn = '', clock = 0, fc = 0, heroKey = ''; const tIntro = performance.now() + 150;
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now;
     const lag = scrollY - sy; sy += lag * .12; const vh = innerHeight;
+    if (!still) clock += dt; fc++;
 
     if (hero._v) {
       const hp = clamp(sy / (hero.offsetHeight * .85)), ip = ease(clamp((now - tIntro) / 1700));
       const wd = (62 + 63 * ip * (1 - hp)).toFixed(1);
       if (wd !== wdH) heroMark.style.setProperty('--wd', wdH = wd);
       heroP = hp; riseP = ease(clamp((now - tIntro) / 2400)); heroImg.style.setProperty('--fy', (hp * 70).toFixed(1) + 'px');
-      if (now - slideT > DUR) setSlide(slide + 1);
-      drawHero(now);
+      if (!still) { slideMs += dt * 1000; if (slideMs > DUR) setSlide(slide + 1); }
+      // the backdrop repaints every other frame; paused, only when something it depends on has changed
+      const key = still ? [slide, hp.toFixed(3), riseP.toFixed(3), hc.width, hc.height].join() : '';
+      if (still ? key !== heroKey : fc & 1) drawHero(clock * 1000);
+      heroKey = key;
     }
     if (foot._v) {
       const r = footMark.getBoundingClientRect(), wd = (62 + 63 * ease(clamp((vh - r.top) / (r.height + vh * .25)))).toFixed(1);
@@ -849,8 +861,7 @@ canvas{display:block}
       if (c !== cn) countEl.textContent = cn = c;
     }
     frames.forEach(f => { if (!f._v) return; const r = f.getBoundingClientRect(), rel = clamp(((r.top + r.height / 2) - vh / 2) / vh, -1, 1); f.firstElementChild.style.transform = `translate3d(0,${(-rel * r.height * .11).toFixed(1)}px,0)`; });
-    mqs.forEach(m => { if (!m.w || !m.el._v) return; m.x = (m.x + (38 + Math.abs(lag) * 1.6) * dt) % m.w; m.t.style.transform = `translate3d(${(m.dir > 0 ? -m.x : m.x - m.w).toFixed(1)}px,0,0)`; });
-    if (stage._v) { playT += dt; drawStage(); }
+    mqs.forEach(m => { if (!m.w || !m.el._v || still) return; m.x = (m.x + (38 + Math.abs(lag) * 1.6) * dt) % m.w; m.t.style.transform = `translate3d(${(m.dir > 0 ? -m.x : m.x - m.w).toFixed(1)}px,0,0)`; });
     requestAnimationFrame(frame);
   }
 
