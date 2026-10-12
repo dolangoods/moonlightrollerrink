@@ -670,9 +670,13 @@ canvas{display:block}
   }
   const heroImg = $('#heroImg'), moonAt = { mx: .5, my: .26, mr: .26 }; let heroP = 0, riseP = RM ? 1 : 0;
   function sizeHero() {
-    const W = hero.offsetWidth, H = hero.offsetHeight, w = Math.max(280, Math.min(1280, W)); hc.width = w; hc.height = Math.max(180, Math.round(w * H / W));
+    const W = hero.offsetWidth, H = hero.offsetHeight, w = Math.max(280, Math.min(1280, W)), h = Math.max(180, Math.round(w * H / W));
+    // phones fire resize whenever the address bar slides in or out; setting a canvas's size wipes it, so only touch it when it really changed
+    const resized = hc.width !== w || hc.height !== h;
+    if (resized) { hc.width = w; hc.height = h; }
     const fh = heroImg.offsetHeight || H * .92;   // moon sits behind the head: 20% down the figure, a bit wider than the shoulders
     moonAt.my = (H - fh + fh * .2) / H; moonAt.mr = fh * .283 / H;
+    if (resized) drawHero(clock * 1000);
   }
   // one control stops everything that moves by itself: the backdrop, the frame change, the ticker, the sleeve lights and the grain
   const motionBtn = $('#motionBtn');
@@ -844,9 +848,10 @@ canvas{display:block}
       if (wd !== wdH) heroMark.style.setProperty('--wd', wdH = wd);
       heroP = hp; riseP = ease(clamp((now - tIntro) / 2400)); heroImg.style.setProperty('--fy', (hp * 70).toFixed(1) + 'px');
       if (!still) { slideMs += dt * 1000; if (slideMs > DUR) setSlide(slide + 1); }
-      // the backdrop repaints every other frame; paused, only when something it depends on has changed
-      const key = still ? [slide, hp.toFixed(3), riseP.toFixed(3), hc.width, hc.height].join() : '';
-      if (still ? key !== heroKey : fc & 1) drawHero(clock * 1000);
+      // the backdrop repaints every other frame, but every frame while scrolling so the moon stays locked behind the figure;
+      // paused, only when something it depends on has changed
+      const key = still ? [slide, hp.toFixed(3), riseP.toFixed(3), hc.width, hc.height].join() : hp.toFixed(4);
+      if (still ? key !== heroKey : (fc & 1 || key !== heroKey)) drawHero(clock * 1000);
       heroKey = key;
     }
     if (foot._v) {
